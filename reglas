@@ -1,0 +1,364 @@
+ 
+Evaluación Final
+Tecnologías  en Tecnologías de la Información 
+
+ 
+Objetivo 
+El alumno debe de gestionar y administrar una plataforma web desde cero, implementando la
+metodología MVC (Model, View & Controller); utilizando el framework CodeIgniter4 (CI) u otro
+similar. Durante el desarrollo e implementación del sistema, se debe de considerar y atender los
+aspectos relacionados con la problemática descrita a continuación. 
+Descripción  
+La franquicia Blockbuster necesita una plataforma web que le permita ofrecer su propio alquiler de
+streaming de video, logrando que el proceso de alquiler se realice de una manera eficiente y eficaz;
+cuidando los diferentes diversos planes que se ofertan para sus respectivos clientes (consumidores). 
+Blockbuster en su proceso de alquiler, cuenta con tres tipos de planes que le han permitido a los
+clientes elegir la opción que mejor se adapte a sus necesidades. Sin embargo, Blockbuster tienen la
+visión de ofertar nuevos planes como plazo futuro. Para ello, cada plan debe incluir: nombre, precio,
+límite de streaming, descripción, fecha registro, estatus (Habilitado/Deshabilatado).  
+En cuanto al catálogo de streaming de video, la plataforma debe de diferencia entre una película o
+una serie (tipo de streaming), considerando: nombre, caratula, tráiler, clasificación, género,
+descripción, duración (película) o número de temporadas (serie). 
+Sí se desea realizar el proceso de alquiler de una pelicula/serie, es necesario considerar como
+primera instancia a nuestro consumidor: fecha de registro, estatus (Habilitado/Deshabilitado),
+nombre, apellido paterno, apellido materno, email, password, sexo, imagen, el rol (cliente) y el tipo
+de plan que ha elegido. Una vez dada la instancia del cliente, podrá generar un límite de n cantidad
+de alquiler para su streaming de video; la cual se determina por el tipo de plan que el usuario haya
+elegido.  
+Para ello, del alquiler se solicita: id_usaurio, id_streaming, fecha alquiler, fecha vencimiento (5 días),
+estatus alquiler (En proceso, Culminado, Cancelado).  
+ 
+ Consideraciones 
+Dada la anterior, la franquicia Blockbuster ha determinado las siguientes consideraciones para el
+desarrollo de su plataforma:  
+
+1. La plataforma web debe contar con dos enfoques de desarrollo: 
+a. Panel Administrable
+Es aquel proceso interno que nos permite administrar y gestionar toda la
+información que se presentará en el portal público.
+ 
+b. Portal público
+Proceso externo visible para nuestros clientes, donde pueden visualizar la n 
+cantidad de películas y/o series que ofrece la franquicia: 
+i. Inicio 
+Debe de mostrar de manera en general los streaming más visitados, los disponibles, los
+recién agregados, etc…
+ 
+ii. Tipos Géneros 
+Blockbuster necesita contar con categorías definidas con la finalidad de que el usuario
+(cliente) determine el tipo de género que hace referencia al streaming solicitado.
+ 
+iii. Inicio Sesión
+El cliente puede generar su n cantidad de películas en alquiler siempre y cuando haya
+iniciado sesión. Lo que permite visualizar todos los videos relacionados por el tipo de
+streming (película/serie), en caso contrario lo único que puede visualizar del streaming
+es su información general.
+ 
+iv. Streaming Detalles 
+En este punto el cliente pude visualizar la información general de streaming deseado.
+ 
+v. Alquiler 
+Para el proceso de alquiler cabe mencionar que el cliente tiene un límite de renta de 
+streaming por su tipo de alquiler, es decir, que si el usuario excede el límite de renta por
+mensualidad automáticamente la plataforma debe de señalar que se ha excedido. Cada
+solicitud de alquiler por streming de video tiene como límite de 5 días para disfrutar del
+contenido.
+ 
+vi. Pago alquiler 
+Para gestionar de manera correcta el pago del alquiler el usuario puede generarlo desde
+su propio perfil o un apartado dentro del sistema. Donde, se tiene que realizar una
+simulación de pago (solo se solicita el número de tarjeta); por lo que el total de pago se 
+toma desde el tipo de plan que el cliente haya elegido desde su contratación.
+Una vez presentado el pago, el operador debe de controlar el ingreso al sistema del
+cliente; es decir, que el operador determina si la simulación de pago se autorizó permite
+al cliente continuar con el proceso de streming. 
+
+vii. Perfil  
+En este apartado el cliente puede visualizar su información, el tipo de plan que rento, el
+listado de alquiler (se podrá visualizar el tiempo (n días hábiles) y estado del alquiler: “En
+Proceso”, “Culminado”). 
+
+2. La plataforma web debe estar administrada por roles específicos, que permite gestionar una 
+instancia adecuada de datos
+a. Administrador
+b. Operador
+c. Cliente 
+
+3.  Cada rol mencionado en el punto anterior tiene actividades únicas dentro de la plataforma 
+a. Administrador
+i. Permite gestionar el CRUD de usuarios, tipos de géneros, planes, streaming. 
+
+b. Operador 
+i. Validación de los clientes.
+ii. Permite generar la validación de pago. 
+
+c. Cliente 
+i. Registro propio.
+ii. Permite gestionar su CRUD de alquiler.
+iii. Genera su pago de streaming. 
+
+4. Cada usuario debe contar con credenciales únicas que le permiten el acceso a los distintos 
+módulos que se presentan en el sistema, teniendo en cuenta el rol especifico del usuario.
+a. Administrador 
+i. Módulo Usuarios.
+ii. Módulo de Tipo de Géneros.
+iii. Módulo de Planes. 
+iv. Módulo de Streaming.
+ 
+b. Operador
+i. Modulo Clientes.
+ii. Validación Pagos Clientes. 
+
+c. Cliente 
+i. Registro 
+ii. Alquiler (únicamente si está registrado y validado).
+iii. Generar pago (únicamente si está registrado y validado). 
+
+ 
+  
+5. La administración del sistema debe estar validada por las siguientes credenciales de acceso 
+Base de Datos: blockbuster Usuario: blockbuser Contraseña: blockpass487 
+
+6. Se debe mostrar una sección donde se visualice los posibles planes que oferta la franquicia 
+
+
+
+ 
+Lista de Cotejo 
+
+Módulo
+Portal Público 
+ 
+
+No. DESCRIPCIÓN
+SI NO PUNTAJE 
+1.1
+El portal público es capaz de 
+visualizar toda la información que
+ha sido administrada desde el
+panel. 
+1.2
+El portal público cuenta con una
+navegación clara y sus
+funcionalidades están completas. 
+1.3 
+El portal público cuenta con la
+sección de mi perfil, donde se
+puede visualizar su información
+general del streaming que está
+alquilando. 
+1.4
+Determina una sección donde se 
+puede visualizar de manera clara y
+concisa la información referente al
+streaming general o seleccionado. 
+1.5
+El alquiler cuenta con las 
+restricciones apropiadas tomando
+en cuenta el límite de renta de
+streaming (tipo de plan). 
+1.6
+Tiene un proceso de registro de
+manera pública para los futuros
+clientes. 
+1.7
+Se puede visualizar los diferentes
+streaming más visitados,
+disponibles y recién agregado. 
+Módulo
+Acceso - Roles 
+TOTAL 
+    
+    
+    
+    
+    
+    
+    
+PUNTAJE OBTENIDO  
+TOTAL 
+ 
+No. DESCRIPCIÓN
+SI NO PUNTAJE 
+2.1
+Cada usuario cuenta con una 
+restricción interna en el proceso de 
+    
+ 
+Módulo
+Panel Administrable
+TOTAL 
+
+No. DESCRIPCIÓN
+SI NO PUNTAJE 
+3.1
+Tiene módulos de administración
+adecuadas para cada rol
+(Administrados y Operador). 
+3.2
+Cuenta con un perfil propio para 
+    
+actualizar los datos personales.
+    
+Módulo
+Administración de la BD
+TOTAL 
+PUNTAJE OBTENIDO  
+
+No. DESCRIPCIÓN
+SI NO PUNTAJE 
+4.1 
+La Base de Datos de la plataforma
+está administrada por las
+credenciales estipuladas. 
+Base de Datos:  blockbuster
+Usuario:  blockbuser
+Contraseña:  blockpass487 
+Módulo
+Modularidad Administrador
+TOTAL 
+    
+PUNTAJE OBTENIDO  
+
+No. DESCRIPCIÓN
+SI NO PUNTAJE 
+5.1
+Módulo Usuarios. 
+5.2
+Módulo Tipos Géneros. 
+5.3
+Módulo Planes. 
+5.4
+Módulo Streaming. 
+Módulo
+Modularidad  Operador
+TOTAL 
+    
+    
+    
+    
+PUNTAJE OBTENIDO  
+
+No. DESCRIPCIÓN
+SI NO PUNTAJE 
+6.1
+Módulo Clientes. 
+    
+
+     
+ 
+ 
+administración de información
+(permisos). 
+2.2
+Para el inicio de sesión se verifica si 
+el usuario siempre está habilitado. 
+2.3
+Seguridad implementada de
+autenticación y gestión de
+credenciales. 
+Módulo
+Plantillas y Sistema
+TOTAL 
+    
+    
+PUNTAJE OBTENIDO  
+
+No. DESCRIPCIÓN
+SI NO PUNTAJE 
+8.1
+El portal público cuenta con una 
+plantilla propia.
+    
+8.2
+El panel administrable cuenta con 
+una plantilla propia.
+    
+8.3
+Cuenta con un directorio adecuado
+para todos los recursos posibles
+que usa en el desarrollo 
+8.4
+Implementación de MVC 
+Módulo
+Errores (Al menos 4 errores como 
+máximo) 
+    
+    
+PUNTAJE OBTENIDO
+ 
+TOTAL 
+ 
+No. DESCRIPCIÓN
+SI NO PUNTAJE 
+9.1
+La plataforma no presenta ningún
+hipervínculo mal re direccionado e
+incluso . 
+9.2
+No presenta ningún elemento mal 
+    
+referenciado (imagen o video).
+    
+PUNTAJE OBTENIDO
+ 
+ 
+
+ 
+ 
+6.2 
+Módulo Validación Pago. 
+Módulo
+Modularidad Cliente
+TOTAL 
+    
+PUNTAJE OBTENIDO
+ 
+
+No. DESCRIPCIÓN
+SI NO PUNTAJE 
+7.1
+Módulo alta cliente. 
+7.2
+Módulo Alquiler. 
+7.3
+Módulo Generar Pago. 
+Módulo
+CRUD 
+TOTAL 
+    
+    
+    
+PUNTAJE OBTENIDO
+ 
+
+No. DESCRIPCIÓN
+SI NO PUNTAJE 
+10.1
+CRUD Planes (elemental). 
+10.2
+CRUD Géneros (elemental) 
+10.3
+CRUD Streaming (elemental) 
+10.4
+CRUD Videos (elemental) 
+10.5
+CRUD Pagos 
+10.6
+CRUD Usuarios Planes 
+10.7
+CRUD Alquiler 
+    
+    
+    
+    
+    
+    
+    
+PUNTAJE OBTENIDO  
+
+
+
+
+
+ 
