@@ -205,9 +205,6 @@
                     <a class="nav-link <?= (strpos(current_url(), '/admin/streaming') !== false) ? 'active' : '' ?>" href="/admin/streaming">
                         <i class="fas fa-film"></i> Streaming
                     </a>
-                    <a class="nav-link <?= (strpos(current_url(), '/admin/change-password') !== false) ? 'active' : '' ?>" href="/admin/change-password">
-                        <i class="fas fa-key"></i> Cambiar Contraseña
-                    </a>
                 </nav>
             </div>
         </div>

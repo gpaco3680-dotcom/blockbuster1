@@ -17,8 +17,9 @@ class Generos extends BaseController {
     public function store() {
         $model = new GeneroModel();
         $data = [
-            'nombre_genero' => $this->request->getVar('nombre_genero'),
-            'estatus_genero' => $this->request->getVar('estatus_genero') ?? 'activo',
+            'nombre_genero'      => $this->request->getVar('nombre_genero'),
+            'descripcion_genero' => $this->request->getVar('descripcion_genero'), // <- AGREGADO
+            'estatus_genero'     => $this->request->getVar('estatus_genero') ?? 1, // <- Usamos 1 por defecto
         ];
         $model->insert($data);
         return redirect()->to('/admin/generos')->with('success', 'Género creado exitosamente.');
@@ -36,8 +37,9 @@ class Generos extends BaseController {
     public function update($id) {
         $model = new GeneroModel();
         $data = [
-            'nombre_genero' => $this->request->getVar('nombre_genero'),
-            'estatus_genero' => $this->request->getVar('estatus_genero'),
+            'nombre_genero'      => $this->request->getVar('nombre_genero'),
+            'descripcion_genero' => $this->request->getVar('descripcion_genero'), // <- AGREGADO
+            'estatus_genero'     => $this->request->getVar('estatus_genero'),
         ];
         $model->update($id, $data);
         return redirect()->to('/admin/generos')->with('success', 'Género actualizado exitosamente.');

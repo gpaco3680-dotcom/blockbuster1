@@ -3,6 +3,8 @@
 namespace App\Controllers;
 
 use App\Models\UsuarioModel;
+use App\Models\PlanModel;
+use App\Models\UsuarioPlanModel;
 
 class Auth extends BaseController
 {
@@ -29,32 +31,79 @@ class Auth extends BaseController
         $email = $this->request->getPost('email');
         $password = $this->request->getPost('password');
 
-        // Busca al usuario (el modelo ya filtra por estatus habilitado)
         $usuario = $modelo->validarUsuario($email);
 
-        // Validación con desencriptado (password_verify)
-       if ($usuario && $password == $usuario['password_usuario']) {
-            
-            // Guardamos los datos en sesión
-            session()->set([
-                'id_usuario' => $usuario['id_usuario'],
-                'nombre'     => $usuario['nombre_usuario'],
-                'id_rol'     => $usuario['id_rol'],
-                'logged_in'  => true
-            ]);
+        // Cambiamos la validación para soportar contraseñas encriptadas o temporales
+        if ($usuario) {
+            if (password_verify($password, $usuario['password_usuario']) || $password == $usuario['password_usuario']) {
+                
+                session()->set([
+                    'id_usuario' => $usuario['id_usuario'],
+                    'nombre'     => $usuario['nombre_usuario'],
+                    'id_rol'     => $usuario['id_rol'],
+                    'logged_in'  => true
+                ]);
 
-            return $this->redirigirPorRol($usuario['id_rol']);
+                return $this->redirigirPorRol($usuario['id_rol']);
+            }
         }
 
-        // Si falla, regresa con el error
         return redirect()->back()->with('error', 'Credenciales incorrectas o cuenta deshabilitada.');
     }
 
-    // Función para mostrar la vista de Registro
+    // Carga la vista de registro enviando los planes activos
     public function registerView()
     {
-        return view('Auth/register');
+        $planModel = new PlanModel();
+        $data['planes'] = $planModel->where('estatus_plan', 1)->findAll();
+        return view('Auth/register', $data);
     }
+
+    // Procesa el registro del nuevo cliente
+    public function register()
+{
+    $usuarioModel = new \App\Models\UsuarioModel();
+    $userPlanModel = new \App\Models\UsuarioPlanModel();
+
+    $email = $this->request->getPost('email');
+
+    // 1. VALIDACIÓN: Verificar si el correo ya existe
+    $existe = $usuarioModel->where('email_usuario', $email)->first();
+
+    if ($existe) {
+        // Si existe, regresamos al formulario con un mensaje de error
+        return redirect()->back()->withInput()->with('error', 'El correo electrónico ya está vinculado a otra cuenta.');
+    }
+
+    // 2. Si no existe, procedemos con el registro normal
+    $dataUsuario = [
+        'nombre_usuario'   => $this->request->getPost('nombre'),
+        'ap_usuario'       => $this->request->getPost('ap_paterno'),
+        'am_usuario'       => $this->request->getPost('ap_materno'),
+        'email_usuario'    => $email,
+        'password_usuario' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
+        'sexo_usuario'     => $this->request->getPost('sexo'),
+        'id_rol'           => 3,
+        'estatus_usuario'  => 1,
+        'imagen_usuario'   => 'default.png'
+    ];
+
+    $idUsuario = $usuarioModel->insert($dataUsuario);
+
+    if ($idUsuario) {
+        $idPlan = $this->request->getPost('id_plan');
+        $userPlanModel->insert([
+            'id_usuario'          => $idUsuario,
+            'id_plan'             => $idPlan,
+            'fecha_registro_plan' => date('Y-m-d'),
+            'fecha_fin_plan'      => date('Y-m-d', strtotime('+1 month'))
+        ]);
+
+        return redirect()->to('/auth')->with('success', '¡Registro exitoso! Ya puedes iniciar sesión.');
+    }
+
+    return redirect()->back()->withInput()->with('error', 'Hubo un error al registrar tu cuenta.');
+}
 
     // Función privada para centralizar las redirecciones
     private function redirigirPorRol($rolId)

@@ -22,4 +22,6 @@ class Dashboard extends BaseController {
 
         return view('Admin/dashboard', $data);
     }
+    
+
 }

@@ -25,8 +25,8 @@
                 <div class="mb-3">
                     <label for="estatus_genero" class="form-label">Estatus *</label>
                     <select class="form-select" id="estatus_genero" name="estatus_genero" required>
-                        <option value="activo" <?php echo ($genero['estatus_genero'] == 'activo') ? 'selected' : ''; ?>>Activo</option>
-                        <option value="inactivo" <?php echo ($genero['estatus_genero'] == 'inactivo') ? 'selected' : ''; ?>>Inactivo</option>
+                        <option value="1" <?php echo ($genero['estatus_genero'] == 1) ? 'selected' : ''; ?>>Activo</option>
+                        <option value="0" <?php echo ($genero['estatus_genero'] == 0) ? 'selected' : ''; ?>>Inactivo</option>
                     </select>
                 </div>
 

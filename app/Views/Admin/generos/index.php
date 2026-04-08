@@ -41,8 +41,8 @@
                                 <td><?php echo $genero['nombre_genero']; ?></td>
                                 <td><?php echo $genero['descripcion_genero'] ?? '-'; ?></td>
                                 <td>
-                                    <span class="badge bg-<?php echo ($genero['estatus_genero'] == 'activo') ? 'success' : 'danger'; ?>">
-                                        <?php echo ucfirst($genero['estatus_genero'] ?? 'activo'); ?>
+                                    <span class="badge bg-<?php echo ($genero['estatus_genero'] == 1) ? 'success' : 'danger'; ?>">
+                                        <?php echo ($genero['estatus_genero'] == 1) ? 'Activo' : 'Inactivo'; ?>
                                     </span>
                                 </td>
                                 <td>

@@ -29,8 +29,7 @@ $routes->group('admin', ['filter' => 'AdminFilter'], function($routes) {
     $routes->resource('streaming', ['controller' => 'Admin\Streaming']);
 
     // Change password
-    $routes->get('change-password', 'Auth::changePasswordView');
-    $routes->post('change-password', 'Auth::changePassword');
+   
 });
 
 // --- GRUPO OPERADOR (Punto 63 del PDF) ---
@@ -47,9 +46,8 @@ $routes->group('operador', ['filter' => 'OperadorFilter'], function($routes) {
     $routes->post('pagos/aprobar/(:num)', 'Operador\ValidacionPagos::aprobar/$1');
     $routes->get('pagos/rechazar/(:num)', 'Operador\ValidacionPagos::rechazar/$1');
 
-    // Change password
-    $routes->get('change-password', 'Auth::changePasswordView');
-    $routes->post('change-password', 'Auth::changePassword');
+    
+   
 });
 
 // --- GRUPO CLIENTE (Punto 67 del PDF) ---
@@ -59,6 +57,10 @@ $routes->group('cliente', ['filter' => 'ClienteFilter'], function($routes) {
     
     // Catálogo y Alquiler (Puntos 40 y 41 del PDF)
     $routes->get('catalogo', 'Cliente\Catalogo::index');
+    
+    // AQUÍ VA LA RUTA DE DETALLES (Protegida por el filtro)
+    $routes->get('catalogo/detalle/(:num)', 'Cliente\Catalogo::detalle/$1'); 
+    
     // Nota: El detalle público está arriba, pero si el cliente rentará, pasa por aquí
     $routes->get('alquiler/rentar/(:num)', 'Cliente\Alquiler::rentar/$1'); 
     
@@ -66,7 +68,5 @@ $routes->group('cliente', ['filter' => 'ClienteFilter'], function($routes) {
     $routes->get('perfil', 'Cliente\Perfil::index');
     $routes->post('pagar', 'Cliente\Perfil::generarPago'); // Simulación requerida
 
-    // Change password
-    $routes->get('change-password', 'Auth::changePasswordView');
-    $routes->post('change-password', 'Auth::changePassword');
+    
 });

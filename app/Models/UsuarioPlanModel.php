@@ -4,8 +4,7 @@ namespace App\Models;
 use CodeIgniter\Model;
 
 class UsuarioPlanModel extends Model {
-    protected $table = 'usuarios_planes'; // Asegúrate de si lleva el prefijo blockbuster_ en tu DB
-    
+  protected $table = 'blockbuster_usuarios_planes'; 
     // La llave primaria correcta según el diagrama
     protected $primaryKey = 'id_usuario_plan'; 
     
