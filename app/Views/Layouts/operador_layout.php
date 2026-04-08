@@ -199,9 +199,7 @@
                     <a class="nav-link <?= (strpos(current_url(), '/operador/pagos') !== false) ? 'active' : '' ?>" href="/operador/pagos">
                         <i class="fas fa-credit-card"></i> Validar Pagos
                     </a>
-                    <a class="nav-link <?= (strpos(current_url(), '/operador/change-password') !== false) ? 'active' : '' ?>" href="/operador/change-password">
-                        <i class="fas fa-key"></i> Cambiar Contraseña
-                    </a>
+                    
                 </nav>
             </div>
         </div>

@@ -389,9 +389,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link <?= (strpos(current_url(), '/cliente/change-password') !== false) ? 'active' : '' ?>" href="/cliente/change-password">
-                            <i class="fas fa-key"></i> Cambiar Contraseña
-                        </a>
+                        
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/auth/logout">
