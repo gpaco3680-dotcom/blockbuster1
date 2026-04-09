@@ -52,21 +52,15 @@ $routes->group('operador', ['filter' => 'OperadorFilter'], function($routes) {
 
 // --- GRUPO CLIENTE (Punto 67 del PDF) ---
 $routes->group('cliente', ['filter' => 'ClienteFilter'], function($routes) {
-    // Dashboard principal 
     $routes->get('/', 'Cliente\Catalogo::index'); 
-    
-    // Catálogo y Alquiler (Puntos 40 y 41 del PDF)
     $routes->get('catalogo', 'Cliente\Catalogo::index');
-    
-    // AQUÍ VA LA RUTA DE DETALLES (Protegida por el filtro)
     $routes->get('catalogo/detalle/(:num)', 'Cliente\Catalogo::detalle/$1'); 
-    
-    // Nota: El detalle público está arriba, pero si el cliente rentará, pasa por aquí
     $routes->get('alquiler/rentar/(:num)', 'Cliente\Alquiler::rentar/$1'); 
-    
-    // Perfil y Pagos (Puntos 43, 54 y 84 del PDF)
     $routes->get('perfil', 'Cliente\Perfil::index');
-    $routes->post('pagar', 'Cliente\Perfil::generarPago'); // Simulación requerida
-
+    $routes->post('pagar', 'Cliente\Perfil::generarPago');
     
+    // RUTAS NUEVAS (Asegúrate de que estén aquí)
+    $routes->get('pagar_inicial', 'Cliente\Perfil::pagar_inicial');
+    $routes->get('cancelar_plan', 'Cliente\Perfil::cancelar_plan');
+    $routes->get('planes', 'Cliente\Perfil::cambiar_plan'); 
 });

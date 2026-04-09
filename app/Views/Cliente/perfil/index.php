@@ -17,11 +17,35 @@
                     <hr>
                     
                     <div class="p-3 rounded" style="background-color: #1f4f8b; color: white;">
-                        <p class="mb-1 small">Tu Plan Actual:</p>
-                        <h5 class="fw-bold mb-0">
+                        <p class="mb-1 small text-uppercase" style="letter-spacing: 1px; opacity: 0.8;">Tu Plan Actual:</p>
+                        <h4 class="fw-bold mb-1" style="color: #FFCC00;">
                             <?= esc(mb_convert_encoding($miPlan['nombre_plan'] ?? 'No tienes un plan activo', 'UTF-8', 'ISO-8859-1')) ?>
-                        </h5>
-                        <p class="mb-0 small">Límite: <?= esc($miPlan['cantidad_limite_plan'] ?? 0) ?> rentas</p>
+                        </h4>
+                        <p class="mb-1 small">
+                            <i class="fas fa-ticket-alt me-1"></i> Límite: <?= esc($miPlan['cantidad_limite_plan'] ?? 0) ?> rentas
+                        </p>
+                        
+                        <?php if (!empty($miPlan) && !empty($miPlan['fecha_fin_plan'])): ?>
+                            <p class="mb-3 small fw-bold" style="color: #ffcccc;">
+                                <i class="fas fa-calendar-times me-1"></i> Vence: <?= date('d/m/Y', strtotime($miPlan['fecha_fin_plan'])) ?>
+                            </p>
+                        <?php else: ?>
+                            <p class="mb-3 small"></p> <?php endif; ?>
+                        
+                        <?php if (!empty($miPlan)): ?>
+                            <hr style="border-color: rgba(255,255,255,0.2);">
+                            <div class="d-grid gap-2">
+                                <a href="<?= base_url('cliente/planes') ?>" class="btn btn-sm fw-bold shadow-sm" style="background-color: #FFCC00; color: #152238;">
+                                    <i class="fas fa-sync-alt"></i> Cambiar Plan
+                                </a>
+                                <a href="<?= base_url('cliente/cancelar_plan') ?>" 
+                                class="btn btn-sm btn-outline-light small" 
+                                style="border-color: rgba(255,255,255,0.3);"
+                                onclick="return confirm('¿Estás seguro de cancelar tu plan? Perderás el acceso a rentas.')">
+                                    Cancelar suscripción
+                                </a>
+                            </div>
+                        <?php endif; ?>
                     </div>
                     
                     <?php if (!empty($miPlan)): ?>
@@ -91,8 +115,8 @@
                             <?php if(!empty($misPagos)): ?>
                                 <?php foreach($misPagos as $p): ?>
                                     <tr>
-                                        <td><?= esc($p['fecha_pago']) ?></td>
-                                        <td>**** <?= esc(substr($p['numero_tarjeta'], -4)) ?></td>
+                                        <td><?= date('d/m/Y', strtotime($p['fecha_registro_pago'])) ?></td>
+                                        <td>**** <?= esc(substr($p['tarjeta_pago'], -4)) ?></td>
                                         <td class="fw-bold">$<?= number_format($p['monto_pago'], 2) ?></td>
                                         <td>
                                             <?= ($p['estatus_pago'] == 1) ? '<span class="text-success"><i class="fas fa-check"></i> Autorizado</span>' : '<span class="text-muted">Pendiente</span>' ?>

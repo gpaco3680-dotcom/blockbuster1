@@ -36,7 +36,7 @@
                             <td>
                                 <code class="text-dark bg-light p-1 rounded">
                                     <i class="fas fa-credit-card me-1 text-muted"></i>
-                                    **** **** **** <?= substr($pago['numero_tarjeta'], -4) ?>
+                                    **** **** **** <?= substr($pago['tarjeta_pago'], -4) ?>
                                 </code>
                             </td> 
                             
@@ -45,7 +45,7 @@
                             </td>
                             
                             <td class="text-muted">
-                                <i class="far fa-calendar-alt me-1"></i> <?= $pago['fecha_pago'] ?>
+                                <i class="far fa-calendar-alt me-1"></i> <?= $pago['fecha_registro_pago'] ?>
                             </td>
                             
                             <td class="text-center">

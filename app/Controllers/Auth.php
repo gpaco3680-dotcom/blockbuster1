@@ -84,13 +84,21 @@ class Auth extends BaseController
         'password_usuario' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
         'sexo_usuario'     => $this->request->getPost('sexo'),
         'id_rol'           => 3,
-        'estatus_usuario'  => 1,
+        'estatus_usuario'  => 0, // <--- CAMBIO CLAVE: Entra como 0 (Inactivo) hasta que el admin apruebe el pago
         'imagen_usuario'   => 'default.png'
     ];
 
     $idUsuario = $usuarioModel->insert($dataUsuario);
 
     if ($idUsuario) {
+        // Iniciar sesión básica para que la página de pago sepa quién es el usuario
+        session()->set([
+            'id_usuario' => $idUsuario,
+            'nombre'     => $dataUsuario['nombre_usuario'],
+            'id_rol'     => 3,
+            'logged_in'  => true
+        ]);
+
         $idPlan = $this->request->getPost('id_plan');
         $userPlanModel->insert([
             'id_usuario'          => $idUsuario,
@@ -99,7 +107,8 @@ class Auth extends BaseController
             'fecha_fin_plan'      => date('Y-m-d', strtotime('+1 month'))
         ]);
 
-        return redirect()->to('/auth')->with('success', '¡Registro exitoso! Ya puedes iniciar sesión.');
+       // En lugar de ir al catálogo, mándalo al formulario de pago
+       return redirect()->to(base_url('cliente/pagar_inicial'))->with('success', '¡Registro exitoso! Por favor, simula tu pago para que el operador lo valide.');
     }
 
     return redirect()->back()->withInput()->with('error', 'Hubo un error al registrar tu cuenta.');

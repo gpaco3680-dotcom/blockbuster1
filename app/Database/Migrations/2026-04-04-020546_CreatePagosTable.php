@@ -25,11 +25,11 @@ class CreatePagosTable extends Migration
                 'constraint' => '10,2',
                 'null' => false,
             ],
-            'fecha_pago' => [
+            'fecha_registro_pago' => [
                 'type' => 'DATE',
                 'null' => false,
             ],
-            'numero_tarjeta' => [
+            'tarjeta_pago' => [
                 'type' => 'VARCHAR',
                 'constraint' => 16,
                 'null' => false,
