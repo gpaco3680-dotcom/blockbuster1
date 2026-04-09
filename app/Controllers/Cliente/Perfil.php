@@ -75,17 +75,18 @@ class Perfil extends BaseController {
     
     // Método para cancelar el plan
     public function cancelar_plan()
-    {
-        $id_usuario = session()->get('id_usuario');
-        $usuarioModel = new \App\Models\UsuarioModel();
+{
+    $id_usuario = session()->get('id_usuario');
+    $usuarioPlanModel = new \App\Models\UsuarioPlanModel();
 
-        $usuarioModel->update($id_usuario, [
-            'id_plan' => null
-        ]);
+    // En lugar de poner null en usuarios, borramos o limpiamos la tabla intermedia
+    $usuarioPlanModel->where('id_usuario', $id_usuario)->delete();
 
-        $mensaje = mb_convert_encoding('Plan cancelado correctamente.', 'UTF-8', 'ISO-8859-1');
-        return redirect()->to(base_url('cliente/perfil'))->with('success', $mensaje);
-    }
+    $mensaje = mb_convert_encoding('Plan cancelado correctamente.', 'UTF-8', 'ISO-8859-1');
+    return redirect()->to(base_url('cliente/perfil'))->with('success', $mensaje);
+}
+
+
     // Método para mostrar la selección de planes
     public function cambiar_plan()
     {
@@ -97,6 +98,64 @@ class Perfil extends BaseController {
         $data['sesion'] = session()->get(); 
         
         return view('cliente/planes/seleccion', $data);
+    }
+    // Método que recibe el clic de la tarjeta y actualiza el plan en la base de datos
+    public function procesar_cambio_plan()
+    {
+        $id_usuario = session()->get('id_usuario');
+        $id_nuevo_plan = $this->request->getPost('id_plan');
+        $usuarioPlanModel = new \App\Models\UsuarioPlanModel();
+
+        // Buscamos si el usuario ya tenía un registro en la tabla de usuarios_planes
+        $miPlanActual = $usuarioPlanModel->where('id_usuario', $id_usuario)->first();
+
+        if ($miPlanActual) {
+            // Si ya tenía plan, se lo actualizamos
+            $usuarioPlanModel->update($miPlanActual['id_usuario_plan'], [
+                'id_plan' => $id_nuevo_plan,
+                'fecha_registro_plan' => date('Y-m-d'),
+                'fecha_fin_plan' => date('Y-m-d', strtotime('+1 month'))
+            ]);
+        } else {
+            // Si no tenía (porque lo había cancelado), le insertamos uno nuevo
+             $usuarioPlanModel->insert([
+                'id_usuario' => $id_usuario,
+                'id_plan' => $id_nuevo_plan,
+                'fecha_registro_plan' => date('Y-m-d'),
+                'fecha_fin_plan' => date('Y-m-d', strtotime('+1 month'))
+            ]);
+        }
+
+        // Lo mandamos a la pantalla de pago inicial para que pague su nuevo plan
+        $mensaje = mb_convert_encoding('¡Excelente elección! Por favor realiza el pago de tu nuevo plan.', 'UTF-8', 'ISO-8859-1');
+        return redirect()->to(base_url('cliente/pagar_inicial'))->with('success', $mensaje);
+    }
+    public function pagar_inicial()
+    {
+        $id_usuario = session()->get('id_usuario');
+        
+        $userPlanModel = new \App\Models\UsuarioPlanModel(); 
+        $planModel = new \App\Models\PlanModel();
+
+        // 1. Buscamos el registro del plan que el usuario tiene asignado actualmente
+        $miPlanAsignado = $userPlanModel->where('id_usuario', $id_usuario)->first();
+        
+        // 2. Si lo encuentra, buscamos los detalles del plan (nombre, precio)
+        if ($miPlanAsignado) {
+            $data['miPlan'] = $planModel->find($miPlanAsignado['id_plan']);
+        } else {
+            $data['miPlan'] = null;
+        }
+
+        $data['sesion'] = session()->get();
+
+        // Si por alguna razón no tiene plan, lo mandamos al catálogo para que elija uno
+        if (!$data['miPlan']) {
+            return redirect()->to(base_url('cliente/catalogo'));
+        }
+
+        // Esta es la vista del formulario de la tarjeta
+        return view('cliente/perfil/pago_inicial', $data);
     }
 }
 

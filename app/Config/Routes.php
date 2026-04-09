@@ -63,4 +63,5 @@ $routes->group('cliente', ['filter' => 'ClienteFilter'], function($routes) {
     $routes->get('pagar_inicial', 'Cliente\Perfil::pagar_inicial');
     $routes->get('cancelar_plan', 'Cliente\Perfil::cancelar_plan');
     $routes->get('planes', 'Cliente\Perfil::cambiar_plan'); 
-});
+    $routes->post('procesar_cambio_plan', 'Cliente\Perfil::procesar_cambio_plan');
+    });
