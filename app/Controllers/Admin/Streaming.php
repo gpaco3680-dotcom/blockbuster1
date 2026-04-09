@@ -14,11 +14,16 @@ class Streaming extends BaseController {
     }
 
     public function create() {
-        $generoModel = new GeneroModel();
-        // Solo traemos los géneros activos
-        $data['generos'] = $generoModel->where('estatus_genero', 1)->findAll();
-        return view('admin/streaming/create', $data);
-    }
+    $model = new \App\Models\StreamingModel();
+    $data = [
+        'nombre_streaming'    => $this->request->getVar('nombre_streaming'),
+        'id_genero'           => $this->request->getVar('id_genero'),
+        'descripcion'         => $this->request->getVar('descripcion'),
+        'estatus_streaming'   => 1
+    ];
+    $model->insert($data);
+    return redirect()->to(base_url('admin/streaming'))->with('success', 'Contenido creado.');
+}
 
     public function store() {
         $model = new StreamingModel();
@@ -89,4 +94,11 @@ class Streaming extends BaseController {
         $model->delete($id);
         return redirect()->to('/admin/streaming')->with('success', 'Streaming eliminado exitosamente.');
     }
+    public function new() {
+    $generoModel = new \App\Models\GeneroModel();
+    $data['generos'] = $generoModel->where('estatus_genero', 1)->findAll();
+    return view('admin/streaming/create', $data);
+}
+
+
 }

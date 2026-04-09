@@ -4,54 +4,76 @@ use App\Controllers\BaseController;
 use App\Models\UsuarioModel;
 
 class Usuarios extends BaseController {
+
+    // GET /admin/usuarios -> Lista de usuarios
     public function index() {
         $model = new UsuarioModel();
         $data['usuarios'] = $model->findAll();
         return view('admin/usuarios/index', $data);
     }
 
-    public function create() {
+    // GET /admin/usuarios/new -> Formulario de creación
+    // IMPORTANTE: Este es el que abre el botón "Nuevo Usuario"
+    public function new() {
         return view('admin/usuarios/create');
     }
 
-    public function store() {
+    // POST /admin/usuarios -> Guarda el usuario
+    public function create() {
         $model = new UsuarioModel();
+        
         $data = [
-            'nombre_usuario' => $this->request->getVar('nombre'),
-            'ap_usuario' => $this->request->getVar('ap'),
-            'am_usuario' => $this->request->getVar('am'),
-            'email_usuario' => $this->request->getVar('email'),
-            'password_usuario' => password_hash($this->request->getVar('password'), PASSWORD_DEFAULT),
-            'id_rol' => $this->request->getVar('id_rol'),
-            'estatus_usuario' => $this->request->getVar('estatus'),
+            'nombre_usuario'   => $this->request->getPost('nombre'),
+            'ap_usuario'       => $this->request->getPost('ap'),
+            'am_usuario'       => $this->request->getPost('am'),
+            'email_usuario'    => $this->request->getPost('email'),
+            'password_usuario' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
+            'id_rol'           => $this->request->getPost('id_rol'),
+            'estatus_usuario'  => ($this->request->getPost('estatus') === 'activo') ? 1 : 0
         ];
+
         $model->insert($data);
-        return redirect()->to('/admin/usuarios');
+        return redirect()->to(base_url('admin/usuarios'))->with('success', 'Usuario creado correctamente.');
     }
 
-    public function edit($id) {
+    // GET /admin/usuarios/(:num)/edit -> Formulario de edición
+    public function edit($id = null) {
         $model = new UsuarioModel();
         $data['usuario'] = $model->find($id);
+        if (!$data['usuario']) return redirect()->to(base_url('admin/usuarios'));
+        
         return view('admin/usuarios/edit', $data);
     }
 
-    public function update($id) {
+    // PUT /admin/usuarios/(:num) -> Actualiza el usuario
+    public function update($id = null) {
         $model = new UsuarioModel();
         $data = [
-            'nombre_usuario' => $this->request->getVar('nombre'),
-            'ap_usuario' => $this->request->getVar('ap'),
-            'am_usuario' => $this->request->getVar('am'),
-            'email_usuario' => $this->request->getVar('email'),
-            'id_rol' => $this->request->getVar('id_rol'),
-            'estatus_usuario' => $this->request->getVar('estatus'),
+            'nombre_usuario'   => $this->request->getVar('nombre'),
+            'ap_usuario'       => $this->request->getVar('ap'),
+            'am_usuario'       => $this->request->getVar('am'),
+            'email_usuario'    => $this->request->getVar('email'),
+            'id_rol'           => $this->request->getVar('id_rol'),
+            'estatus_usuario'  => ($this->request->getVar('estatus') === 'activo' || $this->request->getVar('estatus') == 1) ? 1 : 0,
         ];
+        
         $model->update($id, $data);
-        return redirect()->to('/admin/usuarios');
+        return redirect()->to(base_url('admin/usuarios'))->with('success', 'Usuario actualizado.');
     }
 
-    public function delete($id) {
+    // DELETE /admin/usuarios/(:num) -> Desactiva (Borrado lógico)
+    public function delete($id = null) {
         $model = new UsuarioModel();
-        $model->delete($id);
-        return redirect()->to('/admin/usuarios');
+        $data = ['estatus_usuario' => 0];
+
+        if ($model->update($id, $data)) {
+            return redirect()->to(base_url('admin/usuarios'))->with('success', 'Usuario desactivado correctamente.');
+        }
+        return redirect()->to(base_url('admin/usuarios'))->with('error', 'No se pudo desactivar.');
+    }
+
+    // Método show vacío para evitar el error 404 si alguien entra a la ruta por error
+    public function show($id = null) {
+        return redirect()->to(base_url('admin/usuarios'));
     }
 }

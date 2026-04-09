@@ -3,7 +3,7 @@
 <?= $this->section('content') ?>
 <div class="container-fluid">
     <div class="mb-4">
-        <h2>Dashboard Administrativo</h2>
+        <h2>Menu Administrativo</h2>
         <p class="text-muted">Bienvenido al panel de administración. Desde aquí puedes gestionar usuarios, géneros, planes y contenido streaming.</p>
     </div>
 

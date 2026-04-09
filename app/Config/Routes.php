@@ -17,19 +17,15 @@ $routes->get('auth/logout', 'Auth::logout'); // Cerrar sesión
 $routes->get('register', 'Auth::registerView'); // Mostrar formulario de registro
 $routes->post('auth/register', 'Auth::register'); // Procesar registro
 
-// --- GRUPO ADMINISTRADOR (Puntos 57 y 61 del PDF) ---
+// --- GRUPO ADMINISTRADOR ---
 $routes->group('admin', ['filter' => 'AdminFilter'], function($routes) {
     // Dashboard principal 
     $routes->get('/', 'Admin\Dashboard::index'); 
     
-    // CRUDs Elementales (Puntos 62 y 10.1 - 10.7 del PDF)
     $routes->resource('usuarios', ['controller' => 'Admin\Usuarios']);
     $routes->resource('generos', ['controller' => 'Admin\Generos']);
     $routes->resource('planes', ['controller' => 'Admin\Planes']);
     $routes->resource('streaming', ['controller' => 'Admin\Streaming']);
-
-    // Change password
-   
 });
 
 // --- GRUPO OPERADOR (Punto 63 del PDF) ---

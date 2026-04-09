@@ -8,7 +8,7 @@
             <h2>Gestión de Géneros</h2>
         </div>
         <div class="col-md-4 text-end">
-            <a href="<?php echo base_url('/admin/generos/create'); ?>" class="btn btn-primary">
+            <a href="<?php echo base_url('/admin/generos/new'); ?>" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Nuevo Género
             </a>
         </div>

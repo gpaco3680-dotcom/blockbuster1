@@ -11,9 +11,21 @@ class Planes extends BaseController {
         return view('admin/planes/index', $data);
     }
 
-    public function create() {
-        return view('admin/planes/create');
-    }
+    public function new() {
+    return view('admin/planes/create');
+}
+
+public function create() {
+    $model = new \App\Models\PlanModel();
+    $data = [
+        'nombre_plan'          => $this->request->getVar('nombre_plan'),
+        'precio_plan'          => $this->request->getVar('precio_plan'),
+        'cantidad_limite_plan' => $this->request->getVar('cantidad_limite_plan'),
+        'estatus_plan'         => 1
+    ];
+    $model->insert($data);
+    return redirect()->to(base_url('admin/planes'))->with('success', 'Plan creado.');
+}
 
     public function store() {
         $model = new PlanModel();

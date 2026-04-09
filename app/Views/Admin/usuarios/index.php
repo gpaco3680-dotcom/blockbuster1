@@ -8,7 +8,7 @@
             <h2><i class="fas fa-users"></i> Gestión de Usuarios</h2>
         </div>
         <div class="col-md-4 text-end">
-            <a href="<?= base_url('/admin/usuarios/create') ?>" class="btn btn-primary">
+            <a href="<?= base_url('/admin/usuarios/new') ?>" class="btn btn-primary">
                 <i class="fas fa-user-plus"></i> Nuevo Usuario
             </a>
         </div>
