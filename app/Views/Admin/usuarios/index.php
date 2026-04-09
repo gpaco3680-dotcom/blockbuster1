@@ -14,6 +14,19 @@
         </div>
     </div>
 
+    <?php if (session()->getFlashdata('success')) : ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i> <?= session()->getFlashdata('success') ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+
+    <?php if (session()->getFlashdata('error')) : ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i> <?= session()->getFlashdata('error') ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
     <div class="card">
         <div class="table-responsive">
             <table class="table table-striped table-hover mb-0">
@@ -41,15 +54,15 @@
                                 ?>
                             </td>
                             <td>
-                                <span class="badge bg-<?= ($u['estatus_usuario'] == 'activo') ? 'success' : 'danger'; ?>">
-                                    <?= ucfirst($u['estatus_usuario']) ?>
+                                <span class="badge bg-<?= ($u['estatus_usuario'] == 'activo' || $u['estatus_usuario'] == 1) ? 'success' : 'danger'; ?>">
+                                    <?= ($u['estatus_usuario'] == 'activo' || $u['estatus_usuario'] == 1) ? 'Activo' : 'Inactivo'; ?>
                                 </span>
                             </td>
                             <td>
                                 <a href="<?= base_url('/admin/usuarios/' . $u['id_usuario'] . '/edit') ?>" class="btn btn-sm btn-warning">
                                     <i class="fas fa-edit"></i> Editar
                                 </a>
-                                <form method="POST" action="<?= base_url('/admin/usuarios/' . $u['id_usuario']) ?>" style="display:inline;" onsubmit="return confirm('¿Confirma la eliminación?');">
+                                <form method="POST" action="<?= base_url('/admin/usuarios/' . $u['id_usuario']) ?>" style="display:inline;" onsubmit="return confirm('¿Confirma la eliminación de este usuario?');">
                                     <?= csrf_field() ?>
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button type="submit" class="btn btn-sm btn-danger">

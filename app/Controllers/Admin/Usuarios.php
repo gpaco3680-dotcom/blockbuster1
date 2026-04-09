@@ -62,15 +62,41 @@ class Usuarios extends BaseController {
     }
 
     // DELETE /admin/usuarios/(:num) -> Desactiva (Borrado lógico)
-    public function delete($id = null) {
-        $model = new UsuarioModel();
-        $data = ['estatus_usuario' => 0];
+  public function delete($id = null) {
+    $db = \Config\Database::connect();
+    $usuarioModel = new \App\Models\UsuarioModel();
 
-        if ($model->update($id, $data)) {
-            return redirect()->to(base_url('admin/usuarios'))->with('success', 'Usuario desactivado correctamente.');
-        }
-        return redirect()->to(base_url('admin/usuarios'))->with('error', 'No se pudo desactivar.');
+    // 1. REVISAR RENTAS
+    $tieneRentas = $db->table('blockbuster_alquileres')
+                      ->where('id_usuario', $id)
+                      ->countAllResults();
+
+    // 2. REVISAR PLANES ASIGNADOS
+    $tienePlanes = $db->table('blockbuster_usuarios_planes')
+                      ->where('id_usuario', $id)
+                      ->countAllResults();
+
+    // Si tiene datos en cualquiera de las dos tablas, detenemos el borrado
+    if ($tieneRentas > 0 || $tienePlanes > 0) {
+        return redirect()->to(base_url('admin/usuarios'))
+                         ->with('error', 'No se puede eliminar: el usuario tiene rentas activas o un plan de suscripción registrado.');
     }
+
+    // 3. SI ESTÁ LIMPIO, PROCEDER A BORRAR
+    try {
+        if ($usuarioModel->find($id)) {
+            $usuarioModel->delete($id);
+            return redirect()->to(base_url('admin/usuarios'))
+                             ->with('success', 'Usuario eliminado correctamente.');
+        }
+    } catch (\Exception $e) {
+        return redirect()->to(base_url('admin/usuarios'))
+                         ->with('error', 'Ocurrió un error inesperado al intentar borrar.');
+    }
+
+    return redirect()->to(base_url('admin/usuarios'))
+                     ->with('error', 'Usuario no encontrado.');
+}
 
     // Método show vacío para evitar el error 404 si alguien entra a la ruta por error
     public function show($id = null) {

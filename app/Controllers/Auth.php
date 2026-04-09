@@ -122,9 +122,9 @@ class Auth extends BaseController
         return redirect()->to('/cliente');
     }
 
-    public function logout()
-    {
-        session()->destroy();
-        return redirect()->to('/');
-    }
+    public function logout() {
+    $session = session();
+    $session->destroy();
+    return redirect()->to(base_url('/')); // Te manda al inicio ya sin cuenta
+}
 }

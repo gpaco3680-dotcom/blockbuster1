@@ -1,0 +1,1 @@
+__ci_last_regenerate|i:1775697168;_ci_previous_url|s:46:"http://localhost:8080/index.php/admin/usuarios";id_usuario|s:1:"1";nombre|s:5:"Admin";id_rol|s:1:"1";logged_in|b:1;error|s:71:"No se puede borrar el usuario porque tiene historial de rentas o pagos.";__ci_vars|a:1:{s:5:"error";s:3:"old";}
