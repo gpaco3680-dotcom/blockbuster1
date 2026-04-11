@@ -11,6 +11,7 @@ class Inicio extends BaseController
      */
     public function index()
     {
+        
         $modelo = new StreamingModel();
         $datos['catalogo'] = $modelo->getCatalogoConGenero();
         $datos['sesion']   = session()->get();

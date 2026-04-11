@@ -1,1 +1,1 @@
-__ci_last_regenerate|i:1775697168;_ci_previous_url|s:53:"http://localhost:8080/index.php/admin/usuarios/9/edit";id_usuario|s:1:"1";nombre|s:5:"Admin";id_rol|s:1:"1";logged_in|b:1;success|s:20:"Usuario actualizado.";__ci_vars|a:1:{s:7:"success";s:3:"old";}
+__ci_last_regenerate|i:1775697773;_ci_previous_url|s:53:"http://localhost:8080/index.php/admin/usuarios/9/edit";id_usuario|s:1:"1";nombre|s:5:"Admin";id_rol|s:1:"1";logged_in|b:1;success|s:20:"Usuario actualizado.";__ci_vars|a:1:{s:7:"success";s:3:"old";}

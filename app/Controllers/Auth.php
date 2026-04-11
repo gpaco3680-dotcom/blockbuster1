@@ -26,17 +26,24 @@ class Auth extends BaseController
     }
 
     public function login()
-    {
-        $modelo = new UsuarioModel();
-        $email = $this->request->getPost('email');
-        $password = $this->request->getPost('password');
+{
+    $modelo = new \App\Models\UsuarioModel();
+    $email = $this->request->getPost('email');
+    $password = $this->request->getPost('password');
 
-        $usuario = $modelo->validarUsuario($email);
+    // 1. Buscamos directamente usando el nombre exacto de la columna en tu BD
+    $usuario = $modelo->where('email_usuario', $email)->first();
 
-        // Cambiamos la validación para soportar contraseñas encriptadas o temporales
-        if ($usuario) {
+    // 2. Si encontró un usuario con ese correo
+    if ($usuario) {
+        
+        // 3. Verificamos que la cuenta esté activa (estatus_usuario = 1)
+        if ($usuario['estatus_usuario'] == 1) {
+            
+            // 4. Verificamos la contraseña
             if (password_verify($password, $usuario['password_usuario']) || $password == $usuario['password_usuario']) {
                 
+                // ¡Todo correcto! Iniciamos sesión
                 session()->set([
                     'id_usuario' => $usuario['id_usuario'],
                     'nombre'     => $usuario['nombre_usuario'],
@@ -45,11 +52,18 @@ class Auth extends BaseController
                 ]);
 
                 return $this->redirigirPorRol($usuario['id_rol']);
+            } else {
+                return redirect()->back()->with('error', 'Contraseña incorrecta.');
             }
+            
+        } else {
+            return redirect()->back()->with('error', 'Esta cuenta está deshabilitada.');
         }
-
-        return redirect()->back()->with('error', 'Credenciales incorrectas o cuenta deshabilitada.');
     }
+
+    // Si no encontró el correo
+    return redirect()->back()->with('error', 'No existe ninguna cuenta con ese correo.');
+}
 
     // Carga la vista de registro enviando los planes activos
     public function registerView()
