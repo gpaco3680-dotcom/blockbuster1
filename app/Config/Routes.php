@@ -26,6 +26,12 @@ $routes->group('admin', ['filter' => 'AdminFilter'], function($routes) {
     $routes->resource('generos', ['controller' => 'Admin\Generos']);
     $routes->resource('planes', ['controller' => 'Admin\Planes']);
     $routes->resource('streaming', ['controller' => 'Admin\Streaming']);
+
+    // --- SECCIÓN DE VIDEOS CORREGIDA ---
+    $routes->get('videos', 'Admin\Videos::index');          // /admin/videos
+    $routes->get('videos/create', 'Admin\Videos::create');    // /admin/videos/crear
+    $routes->post('videos/guardar', 'Admin\Videos::guardar'); // /admin/videos/guardar
+    $routes->post('videos/eliminar/(:num)', 'Admin\Videos::eliminar/$1');
 });
 
 // --- GRUPO OPERADOR (Punto 63 del PDF) ---

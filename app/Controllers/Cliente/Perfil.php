@@ -77,13 +77,46 @@ class Perfil extends BaseController {
     public function cancelar_plan()
 {
     $id_usuario = session()->get('id_usuario');
+    
+    // Instanciamos los modelos necesarios
     $usuarioPlanModel = new \App\Models\UsuarioPlanModel();
+    $alquilerModel = new \App\Models\AlquilerModel();
+    $usuarioModel = new \App\Models\UsuarioModel();
 
-    // En lugar de poner null en usuarios, borramos o limpiamos la tabla intermedia
+    // 1. Eliminamos el plan de la tabla intermedia 
     $usuarioPlanModel->where('id_usuario', $id_usuario)->delete();
 
-    $mensaje = mb_convert_encoding('Plan cancelado correctamente.', 'UTF-8', 'ISO-8859-1');
+    // 2. Damos de baja sus alquileres (puedes borrarlos o cambiar su estatus a 0) 
+    // Aquí los borramos para que la lista de "Mis Alquileres" quede limpia al cancelar
+    $alquilerModel->where('id_usuario', $id_usuario)->delete();
+
+    // 3. Deshabilitamos al usuario (estatus_usuario = 0) [cite: 119]
+    // Esto obliga a que, al renovar y pagar, el operador deba habilitarlo de nuevo 
+    $usuarioModel->update($id_usuario, ['estatus_usuario' => 0]);
+
+    // Preparamos el mensaje de éxito
+    $mensaje = mb_convert_encoding('Plan cancelado. Alquileres removidos y cuenta en espera de validación.', 'UTF-8', 'ISO-8859-1');
+
     return redirect()->to(base_url('cliente/perfil'))->with('success', $mensaje);
+}
+public function perfil()
+{
+    $id_usuario = session()->get('id_usuario');
+    $usuarioPlanModel = new \App\Models\UsuarioPlanModel();
+    $usuarioModel = new \App\Models\UsuarioModel();
+
+    // 1. Buscamos la relación usuario-plan en la tabla intermedia 
+    // Esto es vital para visualizar el tiempo y estado del alquiler 
+    $data['plan_actual'] = $usuarioPlanModel
+        ->select('blockbuster_usuarios_planes.*, blockbuster_planes.nombre_plan, blockbuster_planes.cantidad_limite_plan')
+        ->join('blockbuster_planes', 'blockbuster_planes.id_plan = blockbuster_usuarios_planes.id_plan')
+        ->where('id_usuario', $id_usuario)
+        ->first();
+
+    // 2. Traemos los datos generales del cliente [cite: 30, 118]
+    $data['usuario'] = $usuarioModel->find($id_usuario);
+
+    return view('Cliente/perfil', $data);
 }
 
 

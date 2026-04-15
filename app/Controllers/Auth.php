@@ -10,14 +10,12 @@ class Auth extends BaseController
 {
     public function index()
     {
-        // --- PRUEBA DE CONEXIÓN A LA BD (Mantenida como pediste) ---
+        // --- PRUEBA DE CONEXIÓN A LA BD ---
         $db = \Config\Database::connect();
         if ($db->connect()) {
-            // Si te molesta el mensaje visual en tu nuevo diseño, solo borra o comenta la siguiente línea:
             echo "<div style='background-color: #1f4f8b; color: white; padding: 10px; text-align: center; font-weight: bold; position: absolute; width: 100%; top: 0; z-index: 1000;'>Conexión exitosa a la base de datos</div>";
         }
 
-        // Si ya está logueado, redirigir a su panel correspondiente
         if (session()->get('logged_in')) {
             return $this->redirigirPorRol(session()->get('id_rol'));
         }
@@ -26,46 +24,52 @@ class Auth extends BaseController
     }
 
     public function login()
-{
-    $modelo = new \App\Models\UsuarioModel();
-    $email = $this->request->getPost('email');
-    $password = $this->request->getPost('password');
+    {
+        $modelo = new \App\Models\UsuarioModel();
+        $email = $this->request->getPost('email');
+        $password = (string)$this->request->getPost('password'); // Forzamos a que sea cadena
 
-    // 1. Buscamos directamente usando el nombre exacto de la columna en tu BD
-    $usuario = $modelo->where('email_usuario', $email)->first();
+        // 1. Buscamos al usuario por su email
+        $usuario = $modelo->where('email_usuario', $email)->first();
 
-    // 2. Si encontró un usuario con ese correo
-    if ($usuario) {
-        
-        // 3. Verificamos que la cuenta esté activa (estatus_usuario = 1)
-        if ($usuario['estatus_usuario'] == 1) {
+        if ($usuario) {
             
-            // 4. Verificamos la contraseña
-            if (password_verify($password, $usuario['password_usuario']) || $password == $usuario['password_usuario']) {
+            // 2. Verificamos que esté activo (estatus_usuario = 1)
+            if ($usuario['estatus_usuario'] == 1) {
                 
-                // ¡Todo correcto! Iniciamos sesión
-                session()->set([
-                    'id_usuario' => $usuario['id_usuario'],
-                    'nombre'     => $usuario['nombre_usuario'],
-                    'id_rol'     => $usuario['id_rol'],
-                    'logged_in'  => true
-                ]);
+                // 3. LOGICA DE CONTRASEÑA ACTUALIZADA:
+                // Intentamos primero con password_verify (para los hashes del script SQL)
+                // y como respaldo comparación directa (solo si aún tienes textos planos)
+                $passwordCorrecta = false;
+                
+                if (password_verify($password, $usuario['password_usuario'])) {
+                    $passwordCorrecta = true;
+                } elseif ($password === $usuario['password_usuario']) {
+                    $passwordCorrecta = true;
+                }
 
-                return $this->redirigirPorRol($usuario['id_rol']);
+                if ($passwordCorrecta) {
+                    // ¡Todo correcto! Iniciamos sesión
+                    session()->set([
+                        'id_usuario' => $usuario['id_usuario'],
+                        'nombre'     => $usuario['nombre_usuario'],
+                        'id_rol'     => $usuario['id_rol'],
+                        'logged_in'  => true
+                    ]);
+
+                    return $this->redirigirPorRol($usuario['id_rol']);
+                } else {
+                    return redirect()->back()->with('error', 'Contraseña incorrecta.');
+                }
+                
             } else {
-                return redirect()->back()->with('error', 'Contraseña incorrecta.');
+                return redirect()->back()->with('error', 'Esta cuenta está deshabilitada.');
             }
-            
-        } else {
-            return redirect()->back()->with('error', 'Esta cuenta está deshabilitada.');
         }
+
+        return redirect()->back()->with('error', 'No existe ninguna cuenta con ese correo.');
     }
 
-    // Si no encontró el correo
-    return redirect()->back()->with('error', 'No existe ninguna cuenta con ese correo.');
-}
-
-    // Carga la vista de registro enviando los planes activos
     public function registerView()
     {
         $planModel = new PlanModel();
@@ -73,62 +77,54 @@ class Auth extends BaseController
         return view('Auth/register', $data);
     }
 
-    // Procesa el registro del nuevo cliente
     public function register()
-{
-    $usuarioModel = new \App\Models\UsuarioModel();
-    $userPlanModel = new \App\Models\UsuarioPlanModel();
+    {
+        $usuarioModel = new \App\Models\UsuarioModel();
+        $userPlanModel = new \App\Models\UsuarioPlanModel();
 
-    $email = $this->request->getPost('email');
+        $email = $this->request->getPost('email');
+        $existe = $usuarioModel->where('email_usuario', $email)->first();
 
-    // 1. VALIDACIÓN: Verificar si el correo ya existe
-    $existe = $usuarioModel->where('email_usuario', $email)->first();
+        if ($existe) {
+            return redirect()->back()->withInput()->with('error', 'El correo electrónico ya está vinculado a otra cuenta.');
+        }
 
-    if ($existe) {
-        // Si existe, regresamos al formulario con un mensaje de error
-        return redirect()->back()->withInput()->with('error', 'El correo electrónico ya está vinculado a otra cuenta.');
+        $dataUsuario = [
+            'nombre_usuario'   => $this->request->getPost('nombre'),
+            'ap_usuario'       => $this->request->getPost('ap_paterno'),
+            'am_usuario'       => $this->request->getPost('ap_materno'),
+            'email_usuario'    => $email,
+            'password_usuario' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
+            'sexo_usuario'     => $this->request->getPost('sexo'),
+            'id_rol'           => 3,
+            'estatus_usuario'  => 0, // Inactivo hasta que validen pago
+            'imagen_usuario'   => 'default.png'
+        ];
+
+        $idUsuario = $usuarioModel->insert($dataUsuario);
+
+        if ($idUsuario) {
+            session()->set([
+                'id_usuario' => $idUsuario,
+                'nombre'     => $dataUsuario['nombre_usuario'],
+                'id_rol'     => 3,
+                'logged_in'  => true
+            ]);
+
+            $idPlan = $this->request->getPost('id_plan');
+            $userPlanModel->insert([
+                'id_usuario'          => $idUsuario,
+                'id_plan'             => $idPlan,
+                'fecha_registro_plan' => date('Y-m-d'),
+                'fecha_fin_plan'      => date('Y-m-d', strtotime('+1 month'))
+            ]);
+
+            return redirect()->to(base_url('cliente/pagar_inicial'))->with('success', '¡Registro exitoso! Simula tu pago.');
+        }
+
+        return redirect()->back()->withInput()->with('error', 'Hubo un error al registrar tu cuenta.');
     }
 
-    // 2. Si no existe, procedemos con el registro normal
-    $dataUsuario = [
-        'nombre_usuario'   => $this->request->getPost('nombre'),
-        'ap_usuario'       => $this->request->getPost('ap_paterno'),
-        'am_usuario'       => $this->request->getPost('ap_materno'),
-        'email_usuario'    => $email,
-        'password_usuario' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
-        'sexo_usuario'     => $this->request->getPost('sexo'),
-        'id_rol'           => 3,
-        'estatus_usuario'  => 0, // <--- CAMBIO CLAVE: Entra como 0 (Inactivo) hasta que el admin apruebe el pago
-        'imagen_usuario'   => 'default.png'
-    ];
-
-    $idUsuario = $usuarioModel->insert($dataUsuario);
-
-    if ($idUsuario) {
-        // Iniciar sesión básica para que la página de pago sepa quién es el usuario
-        session()->set([
-            'id_usuario' => $idUsuario,
-            'nombre'     => $dataUsuario['nombre_usuario'],
-            'id_rol'     => 3,
-            'logged_in'  => true
-        ]);
-
-        $idPlan = $this->request->getPost('id_plan');
-        $userPlanModel->insert([
-            'id_usuario'          => $idUsuario,
-            'id_plan'             => $idPlan,
-            'fecha_registro_plan' => date('Y-m-d'),
-            'fecha_fin_plan'      => date('Y-m-d', strtotime('+1 month'))
-        ]);
-
-       // En lugar de ir al catálogo, mándalo al formulario de pago
-       return redirect()->to(base_url('cliente/pagar_inicial'))->with('success', '¡Registro exitoso! Por favor, simula tu pago para que el operador lo valide.');
-    }
-
-    return redirect()->back()->withInput()->with('error', 'Hubo un error al registrar tu cuenta.');
-}
-
-    // Función privada para centralizar las redirecciones
     private function redirigirPorRol($rolId)
     {
         if ($rolId == 1) return redirect()->to('/admin');
@@ -137,8 +133,7 @@ class Auth extends BaseController
     }
 
     public function logout() {
-    $session = session();
-    $session->destroy();
-    return redirect()->to(base_url('/')); // Te manda al inicio ya sin cuenta
-}
+        session()->destroy();
+        return redirect()->to(base_url('/'));
+    }
 }

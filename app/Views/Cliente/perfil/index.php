@@ -17,22 +17,21 @@
                     <hr>
                     
                     <div class="p-3 rounded" style="background-color: #1f4f8b; color: white;">
-                        <p class="mb-1 small text-uppercase" style="letter-spacing: 1px; opacity: 0.8;">Tu Plan Actual:</p>
-                        <h4 class="fw-bold mb-1" style="color: #FFCC00;">
-                            <?= esc(mb_convert_encoding($miPlan['nombre_plan'] ?? 'No tienes un plan activo', 'UTF-8', 'ISO-8859-1')) ?>
-                        </h4>
-                        <p class="mb-1 small">
-                            <i class="fas fa-ticket-alt me-1"></i> Límite: <?= esc($miPlan['cantidad_limite_plan'] ?? 0) ?> rentas
-                        </p>
-                        
-                        <?php if (!empty($miPlan) && !empty($miPlan['fecha_fin_plan'])): ?>
-                            <p class="mb-3 small fw-bold" style="color: #ffcccc;">
-                                <i class="fas fa-calendar-times me-1"></i> Vence: <?= date('d/m/Y', strtotime($miPlan['fecha_fin_plan'])) ?>
-                            </p>
-                        <?php else: ?>
-                            <p class="mb-3 small"></p> <?php endif; ?>
-                        
                         <?php if (!empty($miPlan)): ?>
+                            <p class="mb-1 small text-uppercase" style="letter-spacing: 1px; opacity: 0.8;">Tu Plan Actual:</p>
+                            <h4 class="fw-bold mb-1" style="color: #FFCC00;">
+                                <?= esc(mb_convert_encoding($miPlan['nombre_plan'] ?? 'No tienes un plan activo', 'UTF-8', 'ISO-8859-1')) ?>
+                            </h4>
+                            <p class="mb-1 small">
+                                <i class="fas fa-ticket-alt me-1"></i> Límite: <?= esc($miPlan['cantidad_limite_plan'] ?? 0) ?> rentas
+                            </p>
+                            
+                            <?php if (!empty($miPlan['fecha_fin_plan'])): ?>
+                                <p class="mb-3 small fw-bold" style="color: #ffcccc;">
+                                    <i class="fas fa-calendar-times me-1"></i> Vence: <?= date('d/m/Y', strtotime($miPlan['fecha_fin_plan'])) ?>
+                                </p>
+                            <?php endif; ?>
+
                             <hr style="border-color: rgba(255,255,255,0.2);">
                             <div class="d-grid gap-2">
                                 <a href="<?= base_url('cliente/planes') ?>" class="btn btn-sm fw-bold shadow-sm" style="background-color: #FFCC00; color: #152238;">
@@ -43,6 +42,15 @@
                                 style="border-color: rgba(255,255,255,0.3);"
                                 onclick="return confirm('¿Estás seguro de cancelar tu plan? Perderás el acceso a rentas.')">
                                     Cancelar suscripción
+                                </a>
+                            </div>
+
+                        <?php else: ?>
+                            <p class="mb-1 small text-uppercase" style="letter-spacing: 1px; opacity: 0.8;">Estado del Servicio:</p>
+                            <h4 class="fw-bold mb-3" style="color: #ffcccc;">Suscripción Cancelada</h4>
+                            <div class="d-grid gap-2">
+                                <a href="<?= base_url('cliente/planes') ?>" class="btn btn-lg fw-bold shadow-sm" style="background-color: #FFCC00; color: #152238;">
+                                    <i class="fas fa-redo"></i> RENOVAR PLAN
                                 </a>
                             </div>
                         <?php endif; ?>
@@ -62,7 +70,6 @@
         </div>
 
         <div class="col-md-8">
-            
             <h3 class="text-primary fw-bold mb-4"><i class="fas fa-history"></i> Mis Alquileres</h3>
             <div class="card border-0 shadow-sm mb-5">
                 <div class="table-responsive">
@@ -159,6 +166,7 @@
 </div>
 
 <script>
+    [cite_start]// Mantengo tu validación de JS para los 16 dígitos de la tarjeta [cite: 59]
     document.getElementById('formPago').addEventListener('submit', function(e) {
         const inputTarjeta = document.getElementById('tarjeta_pago').value;
         if (inputTarjeta.length < 16) {
