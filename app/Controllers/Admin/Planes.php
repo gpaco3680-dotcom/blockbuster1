@@ -11,32 +11,28 @@ class Planes extends BaseController {
         return view('admin/planes/index', $data);
     }
 
+    // Muestra el formulario de creación
     public function new() {
-    return view('admin/planes/create');
-}
+        return view('admin/planes/create');
+    }
 
-public function create() {
-    $model = new \App\Models\PlanModel();
-    $data = [
-        'nombre_plan'          => $this->request->getVar('nombre_plan'),
-        'precio_plan'          => $this->request->getVar('precio_plan'),
-        'cantidad_limite_plan' => $this->request->getVar('cantidad_limite_plan'),
-        'estatus_plan'         => 1
-    ];
-    $model->insert($data);
-    return redirect()->to(base_url('admin/planes'))->with('success', 'Plan creado.');
-}
-
-    public function store() {
+    // Procesa el guardado (Sustituye a store/create duplicados)
+    public function create() {
         $model = new PlanModel();
+        
         $data = [
             'nombre_plan'          => $this->request->getVar('nombre_plan'),
             'precio_plan'          => $this->request->getVar('precio_plan'),
             'cantidad_limite_plan' => $this->request->getVar('cantidad_limite_plan'),
-            'estatus_plan'         => $this->request->getVar('estatus_plan') ?? 1,
+            'tipo_plan'            => $this->request->getVar('tipo_plan') ?? 1, // Agregado tipo_plan
+            'estatus_plan'         => 1
         ];
-        $model->insert($data);
-        return redirect()->to('/admin/planes')->with('success', 'Plan creado exitosamente.');
+
+        if ($model->insert($data)) {
+            return redirect()->to(base_url('admin/planes'))->with('success', 'Plan creado exitosamente.');
+        }
+        
+        return redirect()->back()->withInput()->with('error', 'Error al crear el plan.');
     }
 
     public function edit($id) {
@@ -57,12 +53,12 @@ public function create() {
             'estatus_plan'         => $this->request->getVar('estatus_plan'),
         ];
         $model->update($id, $data);
-        return redirect()->to('/admin/planes')->with('success', 'Plan actualizado exitosamente.');
+        return redirect()->to(base_url('admin/planes'))->with('success', 'Plan actualizado exitosamente.');
     }
 
     public function delete($id) {
         $model = new PlanModel();
         $model->delete($id);
-        return redirect()->to('/admin/planes')->with('success', 'Plan eliminado exitosamente.');
+        return redirect()->to(base_url('admin/planes'))->with('success', 'Plan eliminado exitosamente.');
     }
 }

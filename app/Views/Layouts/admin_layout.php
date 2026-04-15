@@ -205,6 +205,14 @@
                     <a class="nav-link <?= (strpos(current_url(), '/admin/streaming') !== false) ? 'active' : '' ?>" href="/admin/streaming">
                         <i class="fas fa-film"></i> Streaming
                     </a>
+                    <li class="nav-item mb-2" style="list-style: none;">
+    <a href="<?= base_url('admin/videos') ?>" 
+       class="nav-link p-3 rounded d-flex align-items-center <?= (url_is('admin/videos*')) ? 'bg-primary text-white shadow' : 'text-dark' ?>" 
+       style="text-decoration: none; transition: 0.3s;">
+        <i class="fas fa-video me-3" style="width: 20px;"></i>
+        <span class="fw-bold">Videos</span>
+    </a>
+</li>
                 </nav>
             </div>
         </div>

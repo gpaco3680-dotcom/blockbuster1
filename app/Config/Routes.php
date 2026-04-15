@@ -19,18 +19,18 @@ $routes->post('auth/register', 'Auth::register'); // Procesar registro
 
 // --- GRUPO ADMINISTRADOR ---
 $routes->group('admin', ['filter' => 'AdminFilter'], function($routes) {
-    // Dashboard principal 
     $routes->get('/', 'Admin\Dashboard::index'); 
     
+    // Resource automatiza todo para estos controladores
     $routes->resource('usuarios', ['controller' => 'Admin\Usuarios']);
     $routes->resource('generos', ['controller' => 'Admin\Generos']);
     $routes->resource('planes', ['controller' => 'Admin\Planes']);
     $routes->resource('streaming', ['controller' => 'Admin\Streaming']);
 
-    // --- SECCIÓN DE VIDEOS CORREGIDA ---
-    $routes->get('videos', 'Admin\Videos::index');          // /admin/videos
-    $routes->get('videos/create', 'Admin\Videos::create');    // /admin/videos/crear
-    $routes->post('videos/guardar', 'Admin\Videos::guardar'); // /admin/videos/guardar
+    // Videos (Rutas manuales ya que no es un resource completo)
+    $routes->get('videos', 'Admin\Videos::index');
+    $routes->get('videos/create', 'Admin\Videos::create');
+    $routes->post('videos/guardar', 'Admin\Videos::guardar');
     $routes->post('videos/eliminar/(:num)', 'Admin\Videos::eliminar/$1');
 });
 
@@ -54,16 +54,23 @@ $routes->group('operador', ['filter' => 'OperadorFilter'], function($routes) {
 
 // --- GRUPO CLIENTE (Punto 67 del PDF) ---
 $routes->group('cliente', ['filter' => 'ClienteFilter'], function($routes) {
+    
+    // Catálogo y Rentas
     $routes->get('/', 'Cliente\Catalogo::index'); 
     $routes->get('catalogo', 'Cliente\Catalogo::index');
     $routes->get('catalogo/detalle/(:num)', 'Cliente\Catalogo::detalle/$1'); 
     $routes->get('alquiler/rentar/(:num)', 'Cliente\Alquiler::rentar/$1'); 
+
+    // Perfil y Devoluciones
     $routes->get('perfil', 'Cliente\Perfil::index');
-    $routes->post('pagar', 'Cliente\Perfil::generarPago');
-    
-    // RUTAS NUEVAS (Asegúrate de que estén aquí)
-    $routes->get('pagar_inicial', 'Cliente\Perfil::pagar_inicial');
-    $routes->get('cancelar_plan', 'Cliente\Perfil::cancelar_plan');
+    $routes->get('regresar_pelicula/(:num)', 'Cliente\Perfil::regresar_pelicula/$1');
+
+    // Gestión de Planes (Aquí se arregla tu error 404)
     $routes->get('planes', 'Cliente\Perfil::cambiar_plan'); 
     $routes->post('procesar_cambio_plan', 'Cliente\Perfil::procesar_cambio_plan');
-    });
+    $routes->get('cancelar_plan', 'Cliente\Perfil::cancelar_plan');
+
+    // Pagos
+    $routes->get('pagar_inicial', 'Cliente\Perfil::pagar_inicial');
+    $routes->post('pagar', 'Cliente\Perfil::generarPago');
+});

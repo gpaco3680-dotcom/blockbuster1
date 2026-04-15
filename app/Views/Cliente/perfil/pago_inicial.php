@@ -49,11 +49,5 @@
     </div>
 </div>
 
-<script>
-    document.getElementById('formPago').addEventListener('submit', function(e) {
-        const btn = document.getElementById('btnPagar');
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PROCESANDO...';
-    });
-</script>
+
 <?= $this->endSection() ?>

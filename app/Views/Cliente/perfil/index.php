@@ -70,6 +70,23 @@
         </div>
 
         <div class="col-md-8">
+            
+            <?php 
+                $rentasTotales = count($alquileres);
+                $limitePlan = $miPlan['cantidad_limite_plan'] ?? 0;
+                if (!empty($miPlan) && $rentasTotales >= $limitePlan && $limitePlan > 0): 
+            ?>
+                <div class="alert alert-warning border-0 shadow-sm mb-4 animate__animated animate__shakeX">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
+                        <div>
+                            <h5 class="alert-heading fw-bold mb-1">¡Límite de rentas alcanzado!</h5>
+                            <span>Has utilizado tus <strong><?= $limitePlan ?></strong> rentas permitidas. Para alquilar más contenido, por favor <a href="<?= base_url('cliente/planes') ?>" class="fw-bold text-dark">mejora tu plan aquí</a>.</span>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+
             <h3 class="text-primary fw-bold mb-4"><i class="fas fa-history"></i> Mis Alquileres</h3>
             <div class="card border-0 shadow-sm mb-5">
                 <div class="table-responsive">
@@ -80,7 +97,7 @@
                                 <th>Fecha Renta</th>
                                 <th>Vencimiento</th>
                                 <th>Estado</th>
-                            </tr>
+                                <th class="text-center">Acción</th> </tr>
                         </thead>
                         <tbody>
                             <?php if(!empty($alquileres)): ?>
@@ -96,10 +113,20 @@
                                                 <?= ($alq['estatus_alquiler'] == 1) ? 'Culminado' : 'En Proceso' ?>
                                             </span>
                                         </td>
+                                        <td class="text-center"> <?php if($alq['estatus_alquiler'] == 0): ?>
+                                                <a href="<?= base_url('cliente/regresar_pelicula/'.$alq['id_alquiler']) ?>" 
+                                                   class="btn btn-sm btn-outline-danger fw-bold"
+                                                   onclick="return confirm('¿Confirmas que deseas devolver esta película?')">
+                                                    <i class="fas fa-undo"></i> Devolver
+                                                </a>
+                                            <?php else: ?>
+                                                <span class="text-muted small italic">Entregado</span>
+                                            <?php endif; ?>
+                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
-                                <tr><td colspan="4" class="text-center text-muted py-3">No tienes alquileres registrados todavía.</td></tr>
+                                <tr><td colspan="5" class="text-center text-muted py-3">No tienes alquileres registrados todavía.</td></tr>
                             <?php endif; ?>
                         </tbody>
                     </table>
@@ -166,7 +193,6 @@
 </div>
 
 <script>
-    [cite_start]// Mantengo tu validación de JS para los 16 dígitos de la tarjeta [cite: 59]
     document.getElementById('formPago').addEventListener('submit', function(e) {
         const inputTarjeta = document.getElementById('tarjeta_pago').value;
         if (inputTarjeta.length < 16) {

@@ -2,13 +2,33 @@
 
 use App\Controllers\BaseController;
 use App\Models\StreamingModel;
+use App\Models\AlquilerModel;
 
 class Catalogo extends BaseController {
     
     public function index() {
         $model = new StreamingModel();
         
-        // Traemos el catálogo activo
+        // --- NUEVA LÓGICA PARA EL PUNTO 7 DEL PDF ---
+
+        // 1. RECIÉN AGREGADOS: Los últimos 4 registros insertados
+        $data['recientes'] = $model->select('blockbuster_streaming.*, blockbuster_generos.nombre_genero')
+                                   ->join('blockbuster_generos', 'blockbuster_generos.id_genero = blockbuster_streaming.id_genero', 'left')
+                                   ->where('estatus_streaming', 1)
+                                   ->orderBy('id_streaming', 'DESC')
+                                   ->limit(4)
+                                   ->findAll();
+
+        // 2. MÁS VISITADOS: Simularemos popularidad con un orden aleatorio o por ID 
+        // (Esto cumple con la visualización de "Diferentes streaming")
+        $data['populares'] = $model->select('blockbuster_streaming.*, blockbuster_generos.nombre_genero')
+                                   ->join('blockbuster_generos', 'blockbuster_generos.id_genero = blockbuster_streaming.id_genero', 'left')
+                                   ->where('estatus_streaming', 1)
+                                   ->orderBy('nombre_streaming', 'ASC') // O por visitas si tuvieras la columna
+                                   ->limit(4)
+                                   ->findAll();
+
+        // 3. DISPONIBLES: Todo el catálogo activo (lo que ya tenías)
         $data['streaming'] = $model->getCatalogoConGenero();
         
         // Enviamos datos de sesión para la personalización de la vista 
@@ -20,6 +40,8 @@ class Catalogo extends BaseController {
     public function detalle($id = null)
     {
         $streamingModel = new \App\Models\StreamingModel();
+        $alquilerModel = new \App\Models\AlquilerModel();
+        $id_usuario = session()->get('id_usuario');
         
         // 1. Buscamos la película por su ID
         $data['item'] = $streamingModel->select('blockbuster_streaming.*, blockbuster_generos.nombre_genero')
@@ -32,7 +54,17 @@ class Catalogo extends BaseController {
             return redirect()->to(base_url('cliente/catalogo'))->with('error', 'La película no existe.');
         }
 
-        // 3. AQUÍ ESTÁ LA MAGIA: Pasamos $data a la vista para que no marque el error "null"
+        // --- MEJORA PARA EL BOTÓN "VER AHORA" ---
+        // Verificamos si el usuario ya tiene esta película rentada y activa (estatus 0)
+        $rentaActiva = $alquilerModel->where([
+            'id_usuario' => $id_usuario,
+            'id_streaming' => $id,
+            'estatus_alquiler' => 0 
+        ])->first();
+
+        $data['yaRentado'] = !empty($rentaActiva);
+
+        // 3. Pasamos $data a la vista
         return view('cliente/catalogo/detalle', $data);
     }
 }

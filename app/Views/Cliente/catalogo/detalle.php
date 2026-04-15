@@ -32,9 +32,16 @@
             </ul>
 
             <div class="mt-4">
-                <a href="<?= base_url('cliente/alquiler/rentar/'.$item['id_streaming']) ?>" class="btn btn-lg fw-bold px-4 shadow-sm" style="background-color: #1f4f8b; color: white;">
-                    <i class="fas fa-ticket-alt me-2"></i> Alquilar Ahora
-                </a>
+                <?php if (isset($yaRentado) && $yaRentado): ?>
+                    <a href="<?= base_url('cliente/catalogo/reproductor/'.$item['id_streaming']) ?>" class="btn btn-lg fw-bold px-4 shadow-sm btn-success animate__animated animate__pulse animate__infinite">
+                        <i class="fas fa-play-circle me-2"></i> VER AHORA
+                    </a>
+                <?php else: ?>
+                    <a href="<?= base_url('cliente/alquiler/rentar/'.$item['id_streaming']) ?>" class="btn btn-lg fw-bold px-4 shadow-sm" style="background-color: #1f4f8b; color: white;">
+                        <i class="fas fa-ticket-alt me-2"></i> Alquilar Ahora
+                    </a>
+                <?php endif; ?>
+
                 <a href="<?= base_url('cliente/catalogo') ?>" class="btn btn-outline-secondary btn-lg ms-2 shadow-sm">
                     Volver al catálogo
                 </a>
