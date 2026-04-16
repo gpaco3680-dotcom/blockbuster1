@@ -30,7 +30,7 @@ $routes->group('admin', ['filter' => 'AdminFilter'], function($routes) {
     // Videos (Rutas manuales ya que no es un resource completo)
     $routes->get('videos', 'Admin\Videos::index');
     $routes->get('videos/create', 'Admin\Videos::create');
-    $routes->post('videos/guardar', 'Admin\Videos::guardar');
+    $routes->post('videos/store', 'Admin\Videos::guardar');
     $routes->post('videos/eliminar/(:num)', 'Admin\Videos::eliminar/$1');
 });
 
@@ -73,7 +73,12 @@ $routes->group('cliente', ['filter' => 'ClienteFilter'], function($routes) {
     // Pagos
     $routes->get('pagar_inicial', 'Cliente\Perfil::pagar_inicial');
     $routes->post('pagar', 'Cliente\Perfil::generarPago');
+    
+    // Reproductor de Video
+    $routes->get('catalogo/reproductor/(:num)', 'Cliente\Catalogo::reproductor/$1');
 });
+
+// ---RUTAS DE PEFIL GLOBAL
 $routes->group('mi_perfil', ['filter' => \App\Filters\AuthFilter::class], function($routes) {
     $routes->get('editar', '\App\Controllers\MiPerfil::editar');
     $routes->post('actualizar', '\App\Controllers\MiPerfil::actualizar');

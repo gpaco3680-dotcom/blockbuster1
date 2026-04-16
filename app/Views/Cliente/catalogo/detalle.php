@@ -22,7 +22,7 @@
             <span class="badge mb-3" style="background-color: #1f4f8b; font-size: 1rem;"><?= esc($item['nombre_genero'] ?? 'Sin género') ?></span>
             
             <p class="lead text-muted mt-3" style="line-height: 1.6;">
-                <?= esc($item['sipnosis_streaming']) ?: 'Sin descripción disponible por el momento.' ?>
+                <?= esc($item['sipnosis_streaming'] ?: 'Sin descripción disponible por el momento.') ?>
             </p>
             
             <ul class="list-unstyled mt-4 p-3 bg-light rounded border-start border-4 border-primary">
@@ -32,19 +32,70 @@
             </ul>
 
             <div class="mt-4">
-                <?php if (isset($yaRentado) && $yaRentado): ?>
-                    <a href="<?= base_url('cliente/catalogo/reproductor/'.$item['id_streaming']) ?>" class="btn btn-lg fw-bold px-4 shadow-sm btn-success animate__animated animate__pulse animate__infinite">
-                        <i class="fas fa-play-circle me-2"></i> VER AHORA
-                    </a>
+                <?php if ($yaRentado): ?>
+                    
+                    <?php if (isset($estatus_alquiler) && $estatus_alquiler == 1): ?>
+                        <div class="alert alert-info d-inline-block p-2 px-4 shadow-sm mb-3" style="border-radius: 10px;">
+                            <i class="fas fa-check-double me-2"></i> <strong>Contenido Culminado</strong>
+                        </div>
+                        <br>
+                        <a href="<?= base_url('cliente/catalogo/reproductor/'.$video['id_video']) ?>" class="btn btn-outline-success btn-lg fw-bold shadow-sm">
+                            <i class="fas fa-redo me-2"></i> VOLVER A VER
+                        </a>
+
+                    <?php else: ?>
+                        <?php if (!empty($video)): ?>
+                            <a href="<?= base_url('cliente/catalogo/reproductor/'.$video['id_video']) ?>" class="btn btn-success btn-lg fw-bold shadow-sm">
+                                <i class="fas fa-play-circle me-2"></i> VER AHORA
+                            </a>
+                        <?php else: ?>
+                            <button class="btn btn-secondary btn-lg disabled shadow-sm">
+                                <i class="fas fa-clock me-2"></i> PRÓXIMAMENTE DISPONIBLE
+                            </button>
+                        <?php endif; ?>
+                    <?php endif; ?>
+
                 <?php else: ?>
-                    <a href="<?= base_url('cliente/alquiler/rentar/'.$item['id_streaming']) ?>" class="btn btn-lg fw-bold px-4 shadow-sm" style="background-color: #1f4f8b; color: white;">
-                        <i class="fas fa-ticket-alt me-2"></i> Alquilar Ahora
+                    <a href="<?= base_url('cliente/alquiler/rentar/'.$item['id_streaming']) ?>" class="btn btn-primary btn-lg fw-bold shadow-sm">
+                        <i class="fas fa-ticket-alt me-2"></i> Alquilar Película
                     </a>
                 <?php endif; ?>
 
                 <a href="<?= base_url('cliente/catalogo') ?>" class="btn btn-outline-secondary btn-lg ms-2 shadow-sm">
                     Volver al catálogo
                 </a>
+            </div>
+
+            <hr class="my-5">
+
+            <div class="mt-4">
+                <h3 class="text-dark fw-bold mb-3"><i class="fab fa-youtube text-danger me-2"></i>Tráiler Oficial</h3>
+                
+                <?php if (!empty($item['trailer_streaming'])): ?>
+                    <?php 
+                        // Limpieza de URL para obtener el ID de YouTube
+                        $urlParts = explode('/', rtrim($item['trailer_streaming'], '/'));
+                        $youtubeId = end($urlParts); 
+                        // Manejo por si es formato watch?v=
+                        if (strpos($youtubeId, 'watch?v=') !== false) {
+                            $youtubeId = substr($youtubeId, strpos($youtubeId, 'v=') + 2);
+                        }
+                    ?>
+                    <div class="ratio ratio-16x9 shadow rounded overflow-hidden">
+                        <iframe 
+                            src="https://www.youtube.com/embed/<?= esc($youtubeId) ?>" 
+                            title="YouTube video player" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                <?php else: ?>
+                    <div class="alert alert-light border text-center py-4">
+                        <i class="fas fa-video-slash fa-2x text-muted mb-2"></i>
+                        <p class="text-muted mb-0">Tráiler no disponible por el momento.</p>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>

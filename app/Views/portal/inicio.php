@@ -79,8 +79,8 @@
                         </div>
                         
                         <div class="card-info">
-                            <span class="genre-badge">
-                                <i class="fas fa-film"></i> <?= esc(utf8_encode($item['nombre_genero'] ?? 'General')) ?>
+                           <span class="genre-badge">
+                             <i class="fas fa-film"></i> <?= esc($item['nombre_genero']) ?>
                             </span>
                             
                             <h3 class="movie-title"><?= esc($item['nombre_streaming']) ?></h3>

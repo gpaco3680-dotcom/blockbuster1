@@ -37,34 +37,57 @@ class Catalogo extends BaseController {
         return view('cliente/catalogo/index', $data);
     }
 
-    public function detalle($id = null)
-    {
-        $streamingModel = new \App\Models\StreamingModel();
-        $alquilerModel = new \App\Models\AlquilerModel();
-        $id_usuario = session()->get('id_usuario');
-        
-        // 1. Buscamos la película por su ID
-        $data['item'] = $streamingModel->select('blockbuster_streaming.*, blockbuster_generos.nombre_genero')
-                                       ->join('blockbuster_generos', 'blockbuster_generos.id_genero = blockbuster_streaming.id_genero', 'left')
-                                       ->where('id_streaming', $id)
-                                       ->first();
+   public function detalle($id = null)
+{
+    $streamingModel = new \App\Models\StreamingModel();
+    $alquilerModel = new \App\Models\AlquilerModel();
+    $videoModel = new \App\Models\VideoModel(); // <--- Agregamos el modelo de videos
+    $id_usuario = session()->get('id_usuario');
+    
+    // 1. Buscamos la película por su ID (con su género)
+    $data['item'] = $streamingModel->select('blockbuster_streaming.*, blockbuster_generos.nombre_genero')
+                                   ->join('blockbuster_generos', 'blockbuster_generos.id_genero = blockbuster_streaming.id_genero', 'left')
+                                   ->where('id_streaming', $id)
+                                   ->first();
 
-        // 2. Si no encuentra la película, regresa al catálogo
-        if (empty($data['item'])) {
-            return redirect()->to(base_url('cliente/catalogo'))->with('error', 'La película no existe.');
-        }
-
-        // --- MEJORA PARA EL BOTÓN "VER AHORA" ---
-        // Verificamos si el usuario ya tiene esta película rentada y activa (estatus 0)
-        $rentaActiva = $alquilerModel->where([
-            'id_usuario' => $id_usuario,
-            'id_streaming' => $id,
-            'estatus_alquiler' => 0 
-        ])->first();
-
-        $data['yaRentado'] = !empty($rentaActiva);
-
-        // 3. Pasamos $data a la vista
-        return view('cliente/catalogo/detalle', $data);
+    // 2. Si no encuentra la película, regresa al catálogo
+    if (empty($data['item'])) {
+        return redirect()->to(base_url('cliente/catalogo'))->with('error', 'La película no existe.');
     }
+
+    // --- MEJORA PARA EL BOTÓN "VER AHORA" ---
+    // Verificamos si el usuario ya tiene esta película rentada y activa (estatus 0)
+    $rentaActiva = $alquilerModel->where([
+        'id_usuario' => $id_usuario,
+        'id_streaming' => $id,
+        'estatus_alquiler' => 0 
+    ])->first();
+
+    $data['yaRentado'] = !empty($rentaActiva);
+
+    // --- NUEVO: BUSCAMOS EL VIDEO ASOCIADO ---
+    // Esto es lo que necesita el botón para saber a qué id_video apuntar
+    $data['video'] = $videoModel->where('id_streaming', $id)
+                                ->where('estatus_video', 1)
+                                ->first();
+
+    // 3. Pasamos $data a la vista
+    return view('cliente/catalogo/detalle', $data);
+}
+   public function reproductor($id_video)
+{
+    $videoModel = new \App\Models\VideoModel();
+    $streamingModel = new \App\Models\StreamingModel();
+
+    $video = $videoModel->find($id_video);
+
+    if (!$video) {
+        return redirect()->back()->with('error', 'Video no encontrado.');
+    }
+
+    $data['video'] = $video;
+    $data['streaming'] = $streamingModel->find($video['id_streaming']);
+
+    return view('cliente/catalogo/reproductor', $data);
+}
 }
