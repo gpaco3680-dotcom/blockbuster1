@@ -74,3 +74,7 @@ $routes->group('cliente', ['filter' => 'ClienteFilter'], function($routes) {
     $routes->get('pagar_inicial', 'Cliente\Perfil::pagar_inicial');
     $routes->post('pagar', 'Cliente\Perfil::generarPago');
 });
+$routes->group('mi_perfil', ['filter' => \App\Filters\AuthFilter::class], function($routes) {
+    $routes->get('editar', '\App\Controllers\MiPerfil::editar');
+    $routes->post('actualizar', '\App\Controllers\MiPerfil::actualizar');
+});

@@ -176,6 +176,9 @@
                     <span class="text-light">
                         <i class="fas fa-user-circle"></i> <?= session()->get('nombre') ?: 'Administrador' ?>
                     </span>
+                    <a href="<?= base_url('mi_perfil/editar') ?>" class="btn btn-sm btn-outline-light me-2">
+                    <i class="fas fa-user-cog"></i> Mi Perfil
+                    </a>
                     <a href="/auth/logout" class="btn btn-logout btn-sm">
                         <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
                     </a>

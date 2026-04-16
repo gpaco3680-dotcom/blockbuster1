@@ -38,10 +38,7 @@ class Perfil extends BaseController {
         return view('cliente/perfil/index', $data);
     }
 
-    /**
-     * MÉTODO NUEVO: Regresar Película (Punto 10.4 CRUD)
-     * Cambia el estatus a 1 (Culminado) pero mantiene el registro para el contador
-     */
+    
     public function regresar_pelicula($id_alquiler)
     {
         $alquilerModel = new AlquilerModel();

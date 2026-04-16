@@ -13,7 +13,12 @@
                     <h4 class="fw-bold text-dark">
                         <?= esc(mb_convert_encoding(session()->get('nombre') ?? 'Usuario', 'UTF-8', 'ISO-8859-1')) ?>
                     </h4>
-                    <p class="text-muted small">Cliente Blockbuster</p>
+                    <p class="text-muted small mb-2">Cliente Blockbuster</p>
+                    
+                    <a href="<?= base_url('mi_perfil/editar') ?>" class="btn btn-sm btn-outline-primary fw-bold mb-3">
+                        <i class="fas fa-user-cog me-1"></i> Editar Mis Datos
+                    </a>
+                    
                     <hr>
                     
                     <div class="p-3 rounded" style="background-color: #1f4f8b; color: white;">
