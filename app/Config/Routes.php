@@ -21,13 +21,17 @@ $routes->post('auth/register', 'Auth::register'); // Procesar registro
 $routes->group('admin', ['filter' => 'AdminFilter'], function($routes) {
     $routes->get('/', 'Admin\Dashboard::index'); 
     
-    // Resource automatiza todo para estos controladores
+    // --- 1. MOVER LA RUTA MANUAL AQUÍ (ARRIBA DEL RESOURCE) ---
+    // Quitamos el prefijo 'admin/' porque ya estamos dentro del grupo
+    $routes->post('streaming/actualizar/(:num)', 'Admin\Streaming::actualizar/$1');
+
+    // --- 2. LOS RESOURCES ---
     $routes->resource('usuarios', ['controller' => 'Admin\Usuarios']);
     $routes->resource('generos', ['controller' => 'Admin\Generos']);
     $routes->resource('planes', ['controller' => 'Admin\Planes']);
     $routes->resource('streaming', ['controller' => 'Admin\Streaming']);
 
-    // Videos (Rutas manuales ya que no es un resource completo)
+    // Videos
     $routes->get('videos', 'Admin\Videos::index');
     $routes->get('videos/create', 'Admin\Videos::create');
     $routes->post('videos/store', 'Admin\Videos::guardar');

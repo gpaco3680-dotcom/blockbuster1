@@ -6,10 +6,9 @@
         <div class="col-md-10 offset-md-1">
             <h2 class="mb-4">Editar Streaming (Película / Serie)</h2>
 
-            <form action="<?php echo base_url('/admin/streaming/' . $streaming['id_streaming']); ?>" method="POST">
+            <form action="<?= base_url('admin/streaming/actualizar/' . $streaming['id_streaming']); ?>" method="POST">
                 <?= csrf_field() ?>
-                <input type="hidden" name="_method" value="PUT">
-
+                
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Nombre *</label>
@@ -89,7 +88,7 @@
                 </div>
 
                 <div class="d-flex gap-2 mb-5">
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Actualizar Streaming</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Guardar Cambios</button>
                     <a href="<?= base_url('/admin/streaming') ?>" class="btn btn-secondary">Cancelar</a>
                 </div>
             </form>
@@ -98,6 +97,7 @@
 </div>
 
 <script>
+    // Mantenemos tu función que ya sirve para ocultar/mostrar duración o temporadas
     document.getElementById('tipo_streaming').addEventListener('change', function() {
         if(this.value === 'pelicula') {
             document.getElementById('div_duracion').style.display = 'block';

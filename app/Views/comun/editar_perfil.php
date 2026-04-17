@@ -18,8 +18,21 @@
                 </div>
                 
                 <div class="card-body p-4 bg-white" style="border-radius: 0 0 15px 15px;">
-                    <form action="<?= base_url('mi_perfil/actualizar') ?>" method="POST">
+                    <form action="<?= base_url('mi_perfil/actualizar') ?>" method="POST" enctype="multipart/form-data">
                         <?= csrf_field() ?>
+
+                        <div class="text-center mb-4">
+                            <div class="position-relative d-inline-block">
+                                <?php 
+                                    $foto = !empty($usuario['foto_perfil']) ? $usuario['foto_perfil'] : 'default.png'; 
+                                ?>
+                                <img src="<?= base_url('uploads/perfiles/'.$foto) ?>" id="imgPreview" class="rounded-circle shadow" style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #1f4f8b;">
+                                <label for="foto_perfil" class="btn btn-sm btn-primary position-absolute bottom-0 end-0 rounded-circle">
+                                    <i class="fas fa-camera"></i>
+                                </label>
+                                <input type="file" name="foto_perfil" id="foto_perfil" class="d-none" accept="image/*" onchange="preview(this)">
+                            </div>
+                        </div>
 
                         <div class="mb-3">
                             <label class="form-label fw-bold">Nombre Completo</label>
@@ -51,4 +64,16 @@
         </div>
     </div>
 </div>
+
+<script>
+function preview(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('imgPreview').src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
 <?= $this->endSection() ?>

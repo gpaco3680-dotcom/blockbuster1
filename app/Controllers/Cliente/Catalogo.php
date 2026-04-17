@@ -74,19 +74,29 @@ class Catalogo extends BaseController {
     // 3. Pasamos $data a la vista
     return view('cliente/catalogo/detalle', $data);
 }
-   public function reproductor($id_video)
+  public function reproductor($id_video)
 {
     $videoModel = new \App\Models\VideoModel();
     $streamingModel = new \App\Models\StreamingModel();
 
+    // 1. Buscamos el video actual
     $video = $videoModel->find($id_video);
 
     if (!$video) {
         return redirect()->back()->with('error', 'Video no encontrado.');
     }
 
+    // 2. Buscamos TODOS los capítulos de esta serie para el selector lateral
+    // Los ordenamos por temporada y luego por capítulo
+    $playlist = $videoModel->where('id_streaming', $video['id_streaming'])
+                            ->where('estatus_video', 1)
+                            ->orderBy('video_temporada', 'ASC')
+                            ->orderBy('capitulo_temporada', 'ASC')
+                            ->findAll();
+
     $data['video'] = $video;
     $data['streaming'] = $streamingModel->find($video['id_streaming']);
+    $data['playlist'] = $playlist; // Nueva variable para la vista
 
     return view('cliente/catalogo/reproductor', $data);
 }

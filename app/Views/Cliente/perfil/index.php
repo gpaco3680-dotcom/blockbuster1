@@ -8,10 +8,23 @@
             <div class="card shadow-sm border-0 mb-4" style="background-color: #f8faff;">
                 <div class="card-body text-center">
                     <div class="mb-3">
-                        <i class="fas fa-user-circle fa-4x text-primary"></i>
+                        <?php 
+                            // Buscamos la foto guardada en la sesión (que actualizamos en el controlador)
+                            $fotoPerfil = session()->get('foto_perfil'); 
+                        ?>
+                        
+                        <?php if (!empty($fotoPerfil) && $fotoPerfil !== 'default.png'): ?>
+                            <img src="<?= base_url('uploads/perfiles/' . $fotoPerfil) ?>" 
+                                 class="rounded-circle shadow-sm border border-3 border-primary" 
+                                 style="width: 100px; height: 100px; object-fit: cover;" 
+                                 alt="Foto de perfil">
+                        <?php else: ?>
+                            <i class="fas fa-user-circle fa-4x text-primary"></i>
+                        <?php endif; ?>
                     </div>
+
                     <h4 class="fw-bold text-dark">
-                        <?= esc(mb_convert_encoding(session()->get('nombre') ?? 'Usuario', 'UTF-8', 'ISO-8859-1')) ?>
+                        <?= esc(session()->get('nombre') ?? 'Usuario') ?>
                     </h4>
                     <p class="text-muted small mb-2">Cliente Blockbuster</p>
                     
@@ -25,7 +38,7 @@
                         <?php if (!empty($miPlan)): ?>
                             <p class="mb-1 small text-uppercase" style="letter-spacing: 1px; opacity: 0.8;">Tu Plan Actual:</p>
                             <h4 class="fw-bold mb-1" style="color: #FFCC00;">
-                                <?= esc(mb_convert_encoding($miPlan['nombre_plan'] ?? 'No tienes un plan activo', 'UTF-8', 'ISO-8859-1')) ?>
+                                <?= esc($miPlan['nombre_plan'] ?? 'No tienes un plan activo') ?>
                             </h4>
                             <p class="mb-1 small">
                                 <i class="fas fa-ticket-alt me-1"></i> Límite: <?= esc($miPlan['cantidad_limite_plan'] ?? 0) ?> rentas
@@ -75,7 +88,6 @@
         </div>
 
         <div class="col-md-8">
-            
             <?php 
                 $rentasTotales = count($alquileres);
                 $limitePlan = $miPlan['cantidad_limite_plan'] ?? 0;
@@ -108,9 +120,7 @@
                             <?php if(!empty($alquileres)): ?>
                                 <?php foreach($alquileres as $alq): ?>
                                     <tr>
-                                        <td class="fw-bold">
-                                            <?= esc(mb_convert_encoding($alq['nombre_streaming'], 'UTF-8', 'ISO-8859-1')) ?>
-                                        </td>
+                                        <td class="fw-bold"><?= esc($alq['nombre_streaming']) ?></td>
                                         <td><?= esc($alq['fecha_inicio_alquiler']) ?></td>
                                         <td><?= esc($alq['fecha_fin_alquiler']) ?></td>
                                         <td>
@@ -118,11 +128,12 @@
                                                 <?= ($alq['estatus_alquiler'] == 1) ? 'Culminado' : 'En Proceso' ?>
                                             </span>
                                         </td>
-                                        <td class="text-center"> <?php if($alq['estatus_alquiler'] == 0): ?>
+                                        <td class="text-center"> 
+                                            <?php if($alq['estatus_alquiler'] == 0): ?>
                                                 <a href="<?= base_url('cliente/regresar_pelicula/'.$alq['id_alquiler']) ?>" 
                                                    class="btn btn-sm btn-outline-danger fw-bold"
                                                    onclick="return confirm('¿Confirmas que deseas devolver esta película?')">
-                                                    <i class="fas fa-undo"></i> Devolver
+                                                     <i class="fas fa-undo"></i> Devolver
                                                 </a>
                                             <?php else: ?>
                                                 <span class="text-muted small italic">Entregado</span>
@@ -169,47 +180,7 @@
                     </table>
                 </div>
             </div>
-            
         </div>
     </div>
 </div>
-
-<div class="modal fade" id="modalPago" tabindex="-1">
-    <div class="modal-dialog">
-        <form action="<?= base_url('cliente/pagar') ?>" method="POST" class="modal-content" id="formPago">
-            <?= csrf_field() ?>
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title">Simulación de Pago</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <p>Se realizará el cobro de <strong>$<?= number_format($miPlan['precio_plan'] ?? 0, 2) ?></strong> correspondiente a tu plan <strong><?= esc(mb_convert_encoding($miPlan['nombre_plan'] ?? 'Ninguno', 'UTF-8', 'ISO-8859-1')) ?></strong>.</p>
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Número de Tarjeta (16 dígitos)</label>
-                    <input type="text" name="tarjeta_pago" id="tarjeta_pago" class="form-control" placeholder="0000 0000 0000 0000" maxlength="16" required>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-primary" id="btnPagar">Confirmar Pago</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<script>
-    document.getElementById('formPago').addEventListener('submit', function(e) {
-        const inputTarjeta = document.getElementById('tarjeta_pago').value;
-        if (inputTarjeta.length < 16) {
-            e.preventDefault();
-            alert('Por favor, ingresa los 16 dígitos de tu tarjeta.');
-            return;
-        }
-        
-        const btn = document.getElementById('btnPagar');
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
-        btn.style.backgroundColor = '#152238';
-    });
-</script>
 <?= $this->endSection() ?>

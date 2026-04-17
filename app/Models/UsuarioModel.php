@@ -13,9 +13,17 @@ class UsuarioModel extends Model
     
     // Agregamos sexo_usuario e imagen_usuario
     protected $allowedFields    = [
-        'nombre_usuario', 'ap_usuario', 'am_usuario', 
-        'sexo_usuario', 'email_usuario', 'password_usuario', 
-        'imagen_usuario', 'id_rol', 'estatus_usuario'
+        'nombre_usuario', 
+        'ap_usuario', 
+        'am_usuario', 
+        'sexo_usuario', 
+        'email_usuario', 
+        'password_usuario', 
+        'imagen_usuario', 
+        'id_rol', 
+        'estatus_usuario',
+        'foto_perfil' // Nueva columna para la foto de perfil
+
     ];
 
     public function validarUsuario($email)

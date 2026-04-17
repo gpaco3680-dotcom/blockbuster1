@@ -164,28 +164,32 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark mb-0">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/admin">
-                <i class="fas fa-film"></i> Blockbuster
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <div class="ms-auto d-flex align-items-center gap-3">
-                    <span class="text-light">
-                        <i class="fas fa-user-circle"></i> <?= session()->get('nombre') ?: 'Administrador' ?>
-                    </span>
-                    <a href="<?= base_url('mi_perfil/editar') ?>" class="btn btn-sm btn-outline-light me-2">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/admin">
+            <i class="fas fa-film"></i> Blockbuster
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="ms-auto d-flex align-items-center gap-2">
+                <?php $fotoSession = session()->get('foto_perfil') ?: 'default.png'; ?>
+                <img src="<?= base_url('uploads/perfiles/'.$fotoSession) ?>" class="rounded-circle border border-light" style="width: 30px; height: 30px; object-fit: cover;">
+                
+                <span class="text-light me-2">
+                    <?= session()->get('nombre') ?: 'Usuario' ?>
+                </span>
+                
+                <a href="<?= base_url('mi_perfil/editar') ?>" class="btn btn-sm btn-outline-light me-2">
                     <i class="fas fa-user-cog"></i> Mi Perfil
-                    </a>
-                    <a href="/auth/logout" class="btn btn-logout btn-sm">
-                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
-                    </a>
-                </div>
+                </a>
+                <a href="/auth/logout" class="btn btn-logout btn-sm text-white border-white">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </a>
             </div>
         </div>
-    </nav>
+    </div>
+</nav>
 
     <div class="row g-0">
         <div class="col-md-3 col-lg-2">

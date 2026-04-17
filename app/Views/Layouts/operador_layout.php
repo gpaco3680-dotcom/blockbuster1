@@ -173,6 +173,8 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <div class="ms-auto d-flex align-items-center gap-3">
+                    <?php $fotoSession = session()->get('foto_perfil') ?: 'default.png'; ?>
+                <img src="<?= base_url('uploads/perfiles/'.$fotoSession) ?>" class="rounded-circle border border-light" style="width: 30px; height: 30px; object-fit: cover;">
                     <span class="text-light">
                         <i class="fas fa-user-circle"></i> <?= session()->get('nombre') ?: 'Operador' ?>
                     </span>

@@ -10,38 +10,66 @@ class MiPerfil extends BaseController {
         
         $data['usuario'] = $usuarioModel->find($id_usuario);
 
-        // Lógica Global: Decidimos qué menú (layout) cargar según el rol
         $id_rol = session()->get('id_rol');
         if ($id_rol == 1) {
             $data['layout_a_usar'] = 'Layouts/admin_layout';
         } elseif ($id_rol == 2) {
             $data['layout_a_usar'] = 'Layouts/operador_layout';
         } else {
-            $data['layout_a_usar'] = 'Layouts/public_layout'; // Cliente
+            $data['layout_a_usar'] = 'Layouts/public_layout'; 
         }
 
         return view('comun/editar_perfil', $data);
     }
 
     public function actualizar() {
-        $usuarioModel = new UsuarioModel();
-        $id_usuario = session()->get('id_usuario');
+    $usuarioModel = new UsuarioModel();
+    $id_usuario = session()->get('id_usuario');
 
-        $data = [
-            'nombre_usuario' => $this->request->getPost('nombre'),
-            'correo_usuario' => $this->request->getPost('correo')
-        ];
+    $data = [
+        'nombre_usuario' => $this->request->getPost('nombre'),
+        'email_usuario'  => $this->request->getPost('correo')
+    ];
 
-        $password = $this->request->getPost('password');
-        if (!empty($password)) {
-            $data['password_usuario'] = password_hash($password, PASSWORD_DEFAULT);
-        }
-
-        if ($usuarioModel->update($id_usuario, $data)) {
-            session()->set('nombre', $data['nombre_usuario']);
-            return redirect()->back()->with('success', 'Datos actualizados correctamente.');
-        }
-
-        return redirect()->back()->with('error', 'Error al actualizar.');
+    // --- LÓGICA DE FOTO (Persistencia en BD y Carpeta) ---
+    $file = $this->request->getFile('foto_perfil');
+    if ($file && $file->isValid() && !$file->hasMoved()) {
+        $newName = $file->getRandomName();
+        // Guardamos físicamente el archivo
+        $file->move(FCPATH . 'uploads/perfiles/', $newName);
+        
+        // Guardamos el nombre en el array para la BASE DE DATOS
+        $data['foto_perfil'] = $newName; 
+        
+        // ACTUALIZAMOS LA SESIÓN: Esto es vital para que se vea en el Navbar y Dashboard
+        session()->set('foto_perfil', $newName);
     }
+
+    $password = $this->request->getPost('password');
+    if (!empty($password)) {
+        $data['password_usuario'] = password_hash($password, PASSWORD_DEFAULT);
+    }
+
+    if ($usuarioModel->update($id_usuario, $data)) {
+        // Actualizamos el nombre en sesión por si lo cambió
+        session()->set('nombre', $data['nombre_usuario']);
+        
+        $id_rol = session()->get('id_rol');
+        
+        // --- REDIRECCIÓN INTELIGENTE POR ROL ---
+        // Esto quita el formulario y los manda a su vista principal correspondiente
+        switch ($id_rol) {
+            case 1: // Administrador
+                return redirect()->to(base_url('admin'))->with('success', 'Perfil actualizado correctamente.');
+            case 2: // Operador
+                return redirect()->to(base_url('operador'))->with('success', 'Perfil actualizado correctamente.');
+            case 3: // Cliente
+                return redirect()->to(base_url('cliente/perfil'))->with('success', 'Perfil actualizado correctamente.');
+            default:
+                return redirect()->to(base_url('/'))->with('success', 'Perfil actualizado.');
+        }
+    }
+
+    return redirect()->back()->with('error', 'Error al actualizar.');
+}
 }
