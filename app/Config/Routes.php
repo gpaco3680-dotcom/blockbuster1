@@ -6,11 +6,11 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
-// --- RUTAS PÚBLICAS (Portal Público - Punto 29 al 39 del PDF) ---
+// --- RUTAS PÚBLICAS (Portal Público) ---
 $routes->get('/', 'Inicio::index'); 
 $routes->get('streaming/detalles/(:num)', 'Inicio::detalles/$1'); // Ver detalles sin iniciar sesión
 
-// --- RUTAS DE AUTENTICACIÓN (Puntos 35 y 82 del PDF) ---
+// --- RUTAS DE AUTENTICACIÓN  (AUTH)---
 $routes->get('auth', 'Auth::index'); // Mostrar formulario de login
 $routes->post('auth/login', 'Auth::login'); // Procesar login
 $routes->get('auth/logout', 'Auth::logout'); // Cerrar sesión
@@ -20,9 +20,6 @@ $routes->post('auth/register', 'Auth::register'); // Procesar registro
 // --- GRUPO ADMINISTRADOR ---
 $routes->group('admin', ['filter' => 'AdminFilter'], function($routes) {
     $routes->get('/', 'Admin\Dashboard::index'); 
-    
-    // --- 1. MOVER LA RUTA MANUAL AQUÍ (ARRIBA DEL RESOURCE) ---
-    // Quitamos el prefijo 'admin/' porque ya estamos dentro del grupo
     $routes->post('streaming/actualizar/(:num)', 'Admin\Streaming::actualizar/$1');
 
     // --- 2. LOS RESOURCES ---
@@ -38,12 +35,12 @@ $routes->group('admin', ['filter' => 'AdminFilter'], function($routes) {
     $routes->post('videos/eliminar/(:num)', 'Admin\Videos::eliminar/$1');
 });
 
-// --- GRUPO OPERADOR (Punto 63 del PDF) ---
+// --- GRUPO OPERADOR  ---
 $routes->group('operador', ['filter' => 'OperadorFilter'], function($routes) {
     // Dashboard principal 
     $routes->get('/', 'Operador\Clientes::index'); 
     
-    // Validación de Clientes y Pagos (Puntos 65 y 66 del PDF)
+    // Validación de Clientes y Pagos 
     $routes->get('clientes', 'Operador\Clientes::index');
     $routes->get('clientes/aprobar/(:num)', 'Operador\Clientes::aprobar/$1');
     $routes->get('clientes/rechazar/(:num)', 'Operador\Clientes::rechazar/$1');
@@ -56,7 +53,7 @@ $routes->group('operador', ['filter' => 'OperadorFilter'], function($routes) {
    
 });
 
-// --- GRUPO CLIENTE (Punto 67 del PDF) ---
+// --- GRUPO CLIENTE ---
 $routes->group('cliente', ['filter' => 'ClienteFilter'], function($routes) {
     
     // Catálogo y Rentas
@@ -69,7 +66,7 @@ $routes->group('cliente', ['filter' => 'ClienteFilter'], function($routes) {
     $routes->get('perfil', 'Cliente\Perfil::index');
     $routes->get('regresar_pelicula/(:num)', 'Cliente\Perfil::regresar_pelicula/$1');
 
-    // Gestión de Planes (Aquí se arregla tu error 404)
+    // Gestión de Planes 
     $routes->get('planes', 'Cliente\Perfil::cambiar_plan'); 
     $routes->post('procesar_cambio_plan', 'Cliente\Perfil::procesar_cambio_plan');
     $routes->get('cancelar_plan', 'Cliente\Perfil::cancelar_plan');
@@ -82,7 +79,7 @@ $routes->group('cliente', ['filter' => 'ClienteFilter'], function($routes) {
     $routes->get('catalogo/reproductor/(:num)', 'Cliente\Catalogo::reproductor/$1');
 });
 
-// ---RUTAS DE PEFIL GLOBAL
+// ---RUTAS DE PEFIL GLOBAL ---
 $routes->group('mi_perfil', ['filter' => \App\Filters\AuthFilter::class], function($routes) {
     $routes->get('editar', '\App\Controllers\MiPerfil::editar');
     $routes->post('actualizar', '\App\Controllers\MiPerfil::actualizar');

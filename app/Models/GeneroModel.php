@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class GeneroModel extends Model
 {
-    // CAMBIO CLAVE: Agregar el prefijo blockbuster_
+    
     protected $table            = 'blockbuster_generos'; 
     protected $primaryKey       = 'id_genero';
     protected $useAutoIncrement = true;

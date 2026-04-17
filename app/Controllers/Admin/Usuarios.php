@@ -5,20 +5,19 @@ use App\Models\UsuarioModel;
 
 class Usuarios extends BaseController {
 
-    // GET /admin/usuarios -> Lista de usuarios
+    //Lista de usuarios
     public function index() {
         $model = new UsuarioModel();
         $data['usuarios'] = $model->findAll();
         return view('admin/usuarios/index', $data);
     }
 
-    // GET /admin/usuarios/new -> Formulario de creación
-    // IMPORTANTE: Este es el que abre el botón "Nuevo Usuario"
+    // Este es el que abre el botón "Nuevo Usuario"
     public function new() {
         return view('admin/usuarios/create');
     }
 
-    // POST /admin/usuarios -> Guarda el usuario
+    // Guarda el usuario
     public function create() {
         $model = new UsuarioModel();
         
@@ -36,7 +35,7 @@ class Usuarios extends BaseController {
         return redirect()->to(base_url('admin/usuarios'))->with('success', 'Usuario creado correctamente.');
     }
 
-    // GET /admin/usuarios/(:num)/edit -> Formulario de edición
+    // Formulario de edición
     public function edit($id = null) {
         $model = new UsuarioModel();
         $data['usuario'] = $model->find($id);
@@ -45,7 +44,7 @@ class Usuarios extends BaseController {
         return view('admin/usuarios/edit', $data);
     }
 
-    // PUT /admin/usuarios/(:num) -> Actualiza el usuario
+    //  Actualiza el usuario
     public function update($id = null) {
         $model = new UsuarioModel();
         $data = [
@@ -61,7 +60,7 @@ class Usuarios extends BaseController {
         return redirect()->to(base_url('admin/usuarios'))->with('success', 'Usuario actualizado.');
     }
 
-    // DELETE /admin/usuarios/(:num) -> Desactiva (Borrado lógico)
+    //  Desactiva (Borrado lógico)
   public function delete($id = null) {
     $db = \Config\Database::connect();
     $usuarioModel = new \App\Models\UsuarioModel();
@@ -98,7 +97,7 @@ class Usuarios extends BaseController {
                      ->with('error', 'Usuario no encontrado.');
 }
 
-    // Método show vacío para evitar el error 404 si alguien entra a la ruta por error
+   
     public function show($id = null) {
         return redirect()->to(base_url('admin/usuarios'));
     }

@@ -11,7 +11,7 @@ class UsuarioModel extends Model
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     
-    // Agregamos sexo_usuario e imagen_usuario
+   
     protected $allowedFields    = [
         'nombre_usuario', 
         'ap_usuario', 
@@ -22,7 +22,7 @@ class UsuarioModel extends Model
         'imagen_usuario', 
         'id_rol', 
         'estatus_usuario',
-        'foto_perfil' // Nueva columna para la foto de perfil
+        'foto_perfil' 
 
     ];
 

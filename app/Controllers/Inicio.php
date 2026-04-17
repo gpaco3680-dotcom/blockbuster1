@@ -6,9 +6,7 @@ use App\Models\StreamingModel;
 
 class Inicio extends BaseController
 {
-    /**
-     * Portal Público: Muestra el catálogo general[cite: 31, 32].
-     */
+   
     public function index()
     {
         
@@ -19,9 +17,6 @@ class Inicio extends BaseController
         return view('portal/inicio', $datos);
     }
 
-    /**
-     * Detalles del Streaming: Información técnica y tráiler[cite: 15, 39].
-     */
     public function detalles($id = null)
     {
         if ($id === null) return redirect()->to('/');

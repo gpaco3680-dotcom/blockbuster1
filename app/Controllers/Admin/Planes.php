@@ -16,7 +16,7 @@ class Planes extends BaseController {
         return view('admin/planes/create');
     }
 
-    // Procesa el guardado (Sustituye a store/create duplicados)
+    // Procesa el guardado 
     public function create() {
         $model = new PlanModel();
         
@@ -24,7 +24,7 @@ class Planes extends BaseController {
             'nombre_plan'          => $this->request->getVar('nombre_plan'),
             'precio_plan'          => $this->request->getVar('precio_plan'),
             'cantidad_limite_plan' => $this->request->getVar('cantidad_limite_plan'),
-            'tipo_plan'            => $this->request->getVar('tipo_plan') ?? 1, // Agregado tipo_plan
+            'tipo_plan'            => $this->request->getVar('tipo_plan') ?? 1, 
             'estatus_plan'         => 1
         ];
 

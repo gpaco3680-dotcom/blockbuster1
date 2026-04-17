@@ -10,12 +10,12 @@ class AdminFilter implements FilterInterface
     {
         $session = session();
         
-        // CORRECCIÓN 1: 'logged_in' en lugar de 'isLoggedIn'
+        
         if (!$session->get('logged_in')) {
-            return redirect()->to('/auth'); // Te manda a tu ruta de Auth
+            return redirect()->to('/auth'); 
         }
         
-        // CORRECCIÓN 2: 'id_rol' en lugar de 'rol'
+    
         if ($session->get('id_rol') != 1) {
             return redirect()->to('/')->with('error', 'No tiene permisos para acceder a esta sección.');
         }

@@ -12,12 +12,12 @@ class Generos extends BaseController {
         return view('admin/generos/index', $data);
     }
 
-    // GET /admin/generos/new (Este es el que abre tu botón "Nuevo Género")
+    // (Este es el que abre tu botón "Nuevo Género")
     public function new() {
         return view('admin/generos/create');
     }
 
-    // POST /admin/generos (Este procesa el formulario de creación)
+    //(Este procesa el formulario de creación)
     public function create() {
         $model = new GeneroModel();
         $data = [
@@ -30,7 +30,6 @@ class Generos extends BaseController {
         return redirect()->to(base_url('admin/generos'))->with('success', 'Género creado exitosamente.');
     }
 
-    // GET /admin/generos/(:num)/edit
     public function edit($id = null) {
         $model = new GeneroModel();
         $data['genero'] = $model->find($id);
@@ -41,7 +40,7 @@ class Generos extends BaseController {
         return view('admin/generos/edit', $data);
     }
 
-    // PUT/PATCH /admin/generos/(:num)
+  
     public function update($id = null) {
         $model = new GeneroModel();
         $data = [
@@ -54,7 +53,7 @@ class Generos extends BaseController {
         return redirect()->to(base_url('admin/generos'))->with('success', 'Género actualizado exitosamente.');
     }
 
-    // DELETE /admin/generos/(:num)
+    // DELETE 
     public function delete($id = null) {
         $model = new GeneroModel();
         $model->delete($id);

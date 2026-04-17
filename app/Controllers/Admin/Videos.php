@@ -17,7 +17,7 @@ class Videos extends BaseController
         $this->streamingModel = new StreamingModel(); 
     }
 
-    // Muestra la lista con Join (Punto 1.1 de la lista de cotejo)
+    // Muestra la lista 
     public function index()
     {
         $data['videos'] = $this->videoModel->select('blockbuster_videos.*, blockbuster_streaming.nombre_streaming')
@@ -33,19 +33,19 @@ class Videos extends BaseController
         return view('Admin/videos/create', $data);
     }
 
-    // Procesa la subida física y el guardado en BD (Punto 10.4 CRUD)
+    // Procesa la subida física y el guardado
     public function guardar()
 {
     $videoModel = new \App\Models\VideoModel();
-    $file = $this->request->getFile('video_file'); // Asegúrate que en tu HTML el input se llame 'video_file'
+    $file = $this->request->getFile('video_file'); 
 
-    // 1. VALIDACIÓN (Punto clave para tu calificación)
+    // 1. VALIDACIÓN 
     $validationRule = [
         'video_file' => [
             'label' => 'Archivo de Video',
             'rules' => 'uploaded[video_file]'
                 . '|mime_in[video_file,video/mp4,video/webm,video/ogg]'
-                . '|max_size[video_file,102400]', // Límite de 100MB (ajustable)
+                . '|max_size[video_file,102400]', 
         ],
         'id_streaming' => 'required',
     ];
@@ -89,7 +89,7 @@ class Videos extends BaseController
     }
 }
 
-    // Elimina registro y archivo físico (Punto 8.3 Recursos)
+    // Elimina registro y archivo físico
     public function eliminar($id = null)
     {
         $video = $this->videoModel->find($id);

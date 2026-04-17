@@ -22,7 +22,7 @@ class Alquiler extends BaseController {
             return redirect()->to('/auth')->with('error', 'Tu cuenta está deshabilitada.');
         }
         
-        // 1. VALIDACIÓN DE PAGO (Configurado para UTF-8 nativo)
+        // 1. VALIDACIÓN DE PAGO 
         $pagoValidado = $pagoModel->where('id_usuario', $id_usuario)
                                   ->where('estatus_pago', 1) 
                                   ->first();
@@ -38,7 +38,7 @@ class Alquiler extends BaseController {
                                         ->where('id_usuario', $id_usuario)
                                         ->first();
 
-        // 3. CONTAR ALQUILERES ACTIVOS (Solo estatus 0 cuenta para el límite)
+        // 3. CONTAR ALQUILERES ACTIVOS 
         $alquilerModel = new AlquilerModel();
         $rentasActuales = $alquilerModel->where('id_usuario', $id_usuario)
                                         ->where('estatus_alquiler', 0) 
@@ -53,7 +53,7 @@ class Alquiler extends BaseController {
         $producto = $streamingModel->find($id_streaming);
         $fecha_inicio = date('Y-m-d');
         
-        // Si tiene temporadas asignadas = Serie (5 días), sino = Película (2 días)
+        // Serie (5 días), sino = Película (2 días)
         if (!empty($producto['temporadas_streaming']) && $producto['temporadas_streaming'] > 0) {
             $dias_renta = 5;
             $tipoMsg = 'serie (5 días)';
@@ -69,7 +69,7 @@ class Alquiler extends BaseController {
             'id_streaming'          => $id_streaming,
             'fecha_inicio_alquiler' => $fecha_inicio,
             'fecha_fin_alquiler'    => $fecha_fin,
-            'estatus_alquiler'      => 0 // 0 = Activa (Pendiente de ver)
+            'estatus_alquiler'      => 0 
         ];
 
         if ($alquilerModel->insert($data)) {
@@ -79,15 +79,12 @@ class Alquiler extends BaseController {
         }
     }
 
-    /**
-     * Esta función permite marcar la película como "Culminada" (Visto)
-     * Se activa vía AJAX/Fetch cuando el video termina en el reproductor.
-     */
+    
     public function finalizar_visualizacion($id_streaming) {
         $alquilerModel = new AlquilerModel();
         $id_usuario = session()->get('id_usuario');
 
-        // Buscamos solo la renta que esté actualmente activa
+       
         $alquiler = $alquilerModel->where([
             'id_usuario'      => $id_usuario,
             'id_streaming'    => $id_streaming,
@@ -95,7 +92,7 @@ class Alquiler extends BaseController {
         ])->first();
 
         if ($alquiler) {
-            // Actualizamos a estatus 1 (Culminado según tinyint(1))
+           
             $alquilerModel->update($alquiler['id_alquiler'], ['estatus_alquiler' => 1]);
             return $this->response->setJSON(['status' => 'success']);
         }

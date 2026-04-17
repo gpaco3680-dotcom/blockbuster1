@@ -9,7 +9,7 @@ class AuthFilter implements FilterInterface
 {
     public function before(RequestInterface $request, $arguments = null)
     {
-        // CORRECCIÓN: 'logged_in' y ruta '/auth'
+        
         if (!session()->get('logged_in')) {
             return redirect()->to('/auth')->with('error', 'Por favor, inicia sesión primero.');
         }

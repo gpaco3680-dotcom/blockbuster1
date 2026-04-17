@@ -7,7 +7,7 @@ class VideoModel extends Model
     protected $table      = 'blockbuster_videos';
     protected $primaryKey = 'id_video';
 
-    // CAMPOS SEGÚN TU IMAGEN DE BD:
+   
     protected $allowedFields = [
         'id_video',
         'estatus_video',

@@ -8,7 +8,7 @@ class StreamingModel extends Model {
     protected $table = 'blockbuster_streaming';
     protected $primaryKey = 'id_streaming';
 
-    // Se agregaron los campos faltantes para que coincidan con el formulario
+    
     protected $allowedFields = [
         'nombre_streaming', 
         'estatus_streaming', 
@@ -18,7 +18,7 @@ class StreamingModel extends Model {
         'trailer_streaming',       
         'clasificacion_streaming', 
         'sipnosis_streaming',      
-        'fecha_lanzamiento_streaming', // <-- Faltaba este campo
+        'fecha_lanzamiento_streaming',
         'fecha_estreno_streaming', 
         'id_genero'
     ];

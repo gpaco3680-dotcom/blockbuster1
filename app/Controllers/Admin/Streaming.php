@@ -62,11 +62,6 @@ class Streaming extends BaseController {
         return view('admin/streaming/edit', $data);
     }
 
-    /**
-     * MÉTODO ACTUALIZADO: actualizar
-     * Se cambió el nombre de 'update' a 'actualizar' para que coincida con la ruta POST
-     * y evitar el error 404 que tenías.
-     */
     public function actualizar($id) {
         $model = new StreamingModel();
         
@@ -89,7 +84,7 @@ class Streaming extends BaseController {
             'estatus_streaming'           => $this->request->getVar('estatus_streaming'),
         ];
         
-        // Usamos el ID recibido para asegurar que se actualice la fila correcta
+       
         if ($model->update($id, $data)) {
             return redirect()->to(base_url('admin/streaming'))->with('success', 'Streaming actualizado exitosamente.');
         } else {

@@ -3,7 +3,7 @@
 use CodeIgniter\Model;
 
 class PagoModel extends Model {
-    // El guion bajo está correcto
+   
     protected $table = 'blockbuster_pagos'; 
     protected $primaryKey = 'id_pago';
     protected $allowedFields = [

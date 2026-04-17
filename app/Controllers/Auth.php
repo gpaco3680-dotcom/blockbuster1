@@ -10,7 +10,6 @@ class Auth extends BaseController
 {
     public function index()
     {
-        // --- PRUEBA DE CONEXIÓN A LA BD ---
         $db = \Config\Database::connect();
         if ($db->connect()) {
             echo "<div style='background-color: #1f4f8b; color: white; padding: 10px; text-align: center; font-weight: bold; position: absolute; width: 100%; top: 0; z-index: 1000;'>Conexión exitosa a la base de datos</div>";
@@ -27,19 +26,17 @@ class Auth extends BaseController
     {
         $modelo = new \App\Models\UsuarioModel();
         $email = $this->request->getPost('email');
-        $password = (string)$this->request->getPost('password'); // Forzamos a que sea cadena
+        $password = (string)$this->request->getPost('password');
 
         // 1. Buscamos al usuario por su email
         $usuario = $modelo->where('email_usuario', $email)->first();
 
         if ($usuario) {
             
-            // 2. Verificamos que esté activo (estatus_usuario = 1)
+            // 2. Verificamos que esté activo 
             if ($usuario['estatus_usuario'] == 1) {
                 
-                // 3. LOGICA DE CONTRASEÑA ACTUALIZADA:
-                // Intentamos primero con password_verify (para los hashes del script SQL)
-                // y como respaldo comparación directa (solo si aún tienes textos planos)
+                // 3. LOGICA DE CONTRASEÑA ACTUALIZADA
                 $passwordCorrecta = false;
                 
                 if (password_verify($password, $usuario['password_usuario'])) {

@@ -31,17 +31,16 @@ class MiPerfil extends BaseController {
         'email_usuario'  => $this->request->getPost('correo')
     ];
 
-    // --- LÓGICA DE FOTO (Persistencia en BD y Carpeta) ---
+    // --- LÓGICA DE FOTO DE PERFIL ---
     $file = $this->request->getFile('foto_perfil');
     if ($file && $file->isValid() && !$file->hasMoved()) {
         $newName = $file->getRandomName();
         // Guardamos físicamente el archivo
         $file->move(FCPATH . 'uploads/perfiles/', $newName);
         
-        // Guardamos el nombre en el array para la BASE DE DATOS
+       
         $data['foto_perfil'] = $newName; 
         
-        // ACTUALIZAMOS LA SESIÓN: Esto es vital para que se vea en el Navbar y Dashboard
         session()->set('foto_perfil', $newName);
     }
 
@@ -51,13 +50,12 @@ class MiPerfil extends BaseController {
     }
 
     if ($usuarioModel->update($id_usuario, $data)) {
-        // Actualizamos el nombre en sesión por si lo cambió
+       
         session()->set('nombre', $data['nombre_usuario']);
         
         $id_rol = session()->get('id_rol');
         
-        // --- REDIRECCIÓN INTELIGENTE POR ROL ---
-        // Esto quita el formulario y los manda a su vista principal correspondiente
+        //redirecciion por rol después de actualizar el perfil
         switch ($id_rol) {
             case 1: // Administrador
                 return redirect()->to(base_url('admin'))->with('success', 'Perfil actualizado correctamente.');

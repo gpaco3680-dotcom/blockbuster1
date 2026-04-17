@@ -15,13 +15,13 @@ class Perfil extends BaseController {
         $pagoModel = new PagoModel();
         $usuarioPlanModel = new UsuarioPlanModel();
 
-        // 1. Obtener el plan actual con join para traer el límite de rentas
+        // 1. Obtener el plan actual
         $data['miPlan'] = $usuarioPlanModel->select('blockbuster_planes.*, blockbuster_usuarios_planes.id_usuario_plan, blockbuster_usuarios_planes.id_plan, blockbuster_usuarios_planes.fecha_fin_plan')
             ->join('blockbuster_planes', 'blockbuster_planes.id_plan = blockbuster_usuarios_planes.id_plan')
             ->where('id_usuario', $id_usuario)
             ->first();
 
-        // 2. Obtener alquileres (Incluimos activos y culminados para el historial)
+        // 2. Obtener alquileres 
         $data['alquileres'] = $alquilerModel->select('blockbuster_alquileres.*, blockbuster_streaming.nombre_streaming')
             ->join('blockbuster_streaming', 'blockbuster_streaming.id_streaming = blockbuster_alquileres.id_streaming')
             ->where('id_usuario', $id_usuario)
@@ -44,7 +44,7 @@ class Perfil extends BaseController {
         $alquilerModel = new AlquilerModel();
         $id_usuario = session()->get('id_usuario');
 
-        // Verificamos que el alquiler pertenezca al usuario
+       
         $alquiler = $alquilerModel->where([
             'id_alquiler' => $id_alquiler,
             'id_usuario'  => $id_usuario
@@ -52,7 +52,7 @@ class Perfil extends BaseController {
 
         if ($alquiler) {
             $alquilerModel->update($id_alquiler, [
-                'estatus_alquiler' => 1, // Cambia de 'En Proceso' a 'Culminado'
+                'estatus_alquiler' => 1, 
                 'fecha_fin_alquiler' => date('Y-m-d') 
             ]);
 
@@ -121,20 +121,19 @@ class Perfil extends BaseController {
         $id_nuevo_plan = $this->request->getPost('id_plan');
         
         $usuarioPlanModel = new \App\Models\UsuarioPlanModel();
-        $usuarioModel = new \App\Models\UsuarioModel(); // Necesario para deshabilitar
+        $usuarioModel = new \App\Models\UsuarioModel(); 
 
         // 1. Buscamos si el usuario ya tenía un registro en la tabla intermedia
         $miPlanActual = $usuarioPlanModel->where('id_usuario', $id_usuario)->first();
 
         if ($miPlanActual) {
-            // Si ya tenía plan, actualizamos a los nuevos datos
             $usuarioPlanModel->update($miPlanActual['id_usuario_plan'], [
                 'id_plan' => $id_nuevo_plan,
                 'fecha_registro_plan' => date('Y-m-d'),
                 'fecha_fin_plan' => date('Y-m-d', strtotime('+1 month'))
             ]);
         } else {
-            // Si no tenía, insertamos el nuevo registro
+            
              $usuarioPlanModel->insert([
                 'id_usuario' => $id_usuario,
                 'id_plan' => $id_nuevo_plan,
@@ -143,8 +142,7 @@ class Perfil extends BaseController {
             ]);
         }
 
-        // --- MEJORA DE SEGURIDAD: DESHABILITAR USUARIO ---
-        // Cambiamos estatus_usuario a 0 para que no pueda entrar al catálogo hasta que pagué
+        // deshabilita el usuario hasta que realice el pago del nuevo plan
         $usuarioModel->update($id_usuario, ['estatus_usuario' => 0]);
 
         // Lo mandamos a la pantalla de pago inicial
