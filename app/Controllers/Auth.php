@@ -36,7 +36,7 @@ class Auth extends BaseController
             // 2. Verificamos que esté activo 
             if ($usuario['estatus_usuario'] == 1) {
                 
-                // 3. LOGICA DE CONTRASEÑA ACTUALIZADA
+                // 3. LOGICA DE CONTRASEÑA 
                 $passwordCorrecta = false;
                 
                 if (password_verify($password, $usuario['password_usuario'])) {
@@ -95,7 +95,7 @@ class Auth extends BaseController
             'password_usuario' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
             'sexo_usuario'     => $this->request->getPost('sexo'),
             'id_rol'           => 3,
-            'estatus_usuario'  => 0, // Inactivo hasta que validen pago
+            'estatus_usuario'  => 0, 
             'imagen_usuario'   => 'default.png'
         ];
 
