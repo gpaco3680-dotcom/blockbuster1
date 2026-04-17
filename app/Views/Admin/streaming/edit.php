@@ -97,7 +97,7 @@
 </div>
 
 <script>
-    // Mantenemos tu función que ya sirve para ocultar/mostrar duración o temporadas
+    
     document.getElementById('tipo_streaming').addEventListener('change', function() {
         if(this.value === 'pelicula') {
             document.getElementById('div_duracion').style.display = 'block';

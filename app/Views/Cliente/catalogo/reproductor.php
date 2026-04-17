@@ -167,21 +167,20 @@
     video.onended = function() {
         console.log("Capítulo terminado. Buscando el siguiente...");
 
-        // 1. Buscamos el elemento que está 'active' en la lista lateral
+      
         const currentActive = document.querySelector('.chapter-item.active');
         
         if (currentActive) {
-            // 2. Buscamos el siguiente elemento hermano (el siguiente capítulo)
+            
             const nextChapter = currentActive.nextElementSibling;
 
             if (nextChapter && nextChapter.classList.contains('chapter-item')) {
-                // 3. Si existe un siguiente capítulo, redirigimos después de 2 segundos
-                // para que el usuario no se asuste con el cambio repentino
+               
                 setTimeout(() => {
                     window.location.href = nextChapter.href;
                 }, 2000);
             } else {
-                // Si ya no hay más capítulos (es el último de la lista)
+                
                 alert("¡Has llegado al final de la serie!");
             }
         }
